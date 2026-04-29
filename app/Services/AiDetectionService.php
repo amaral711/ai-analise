@@ -81,7 +81,6 @@ class AiDetectionService
         $ttr = count(array_unique($words)) / count($words);
 
         // TTR baixo → vocabulário repetitivo → mais IA
-        // TTR ≈ 0.3 → score 0.9 | TTR ≈ 0.8 → score 0.1
         return (float) max(0, min(1, 1.2 - ($ttr * 1.5)));
     }
 
@@ -96,10 +95,10 @@ class AiDetectionService
             return 0.5;
         }
 
-        $lengths = array_map(fn($s) => count($this->extractWords($s)), $sentences);
-        $mean    = array_sum($lengths) / count($lengths);
+        $lengths  = array_map(fn($s) => count($this->extractWords($s)), $sentences);
+        $mean     = array_sum($lengths) / count($lengths);
         $variance = array_sum(array_map(fn($l) => ($l - $mean) ** 2, $lengths)) / count($lengths);
-        $stdDev  = sqrt($variance);
+        $stdDev   = sqrt($variance);
 
         // Desvio padrão baixo → frases uniformes → mais IA
         return (float) max(0, min(1, 1 - ($stdDev / 10)));
@@ -131,9 +130,9 @@ class AiDetectionService
         $structured = 0;
         foreach ($lines as $line) {
             $line = trim($line);
-            if (preg_match('/^\d+[.)]\s/', $line)) $structured++;       // 1. item
-            elseif (preg_match('/^[-•*]\s/', $line)) $structured++;      // bullet
-            elseif (preg_match('/^[A-Z][^.!?]{0,30}:\s*$/', $line)) $structured++; // Label:
+            if (preg_match('/^\d+[.)]\s/', $line)) $structured++;
+            elseif (preg_match('/^[-•*]\s/', $line)) $structured++;
+            elseif (preg_match('/^[A-Z][^.!?]{0,30}:\s*$/', $line)) $structured++;
         }
 
         return (float) min(1.0, ($structured / $total) * 2);
@@ -150,7 +149,6 @@ class AiDetectionService
         $avgLen = array_sum(array_map('strlen', $words)) / count($words);
 
         // Palavras mais longas em média → mais formal → padrão de IA
-        // Média 4 → score 0.2 | Média 8 → score 0.8
         return (float) max(0, min(1, ($avgLen - 3) / 6));
     }
 
