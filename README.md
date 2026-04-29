@@ -1,58 +1,149 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Analise AI
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema de análise de texto para detecção de conteúdo gerado por IA.
 
-## About Laravel
+**Stack:** Laravel 13 · PHP 8.3 · Vue 3 · Inertia.js · MySQL 8 · Redis · Docker
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Pré-requisitos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Docker](https://docs.docker.com/get-docker/) + Docker Compose
+- Make
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Configuração inicial
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. /etc/hosts
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Adicione a entrada abaixo para acessar o projeto pelo domínio local:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+sudo sh -c 'echo "127.0.0.1 app.localhost.com" >> /etc/hosts'
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Buildar e subir os containers
 
-## Contributing
+```bash
+make build
+make up
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Instalar dependências e configurar o projeto
 
-## Code of Conduct
+```bash
+make install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Este comando executa automaticamente:
+- Copia `.env.example` → `.env`
+- Instala dependências PHP via Composer
+- Gera a `APP_KEY`
+- Instala Laravel Breeze + Inertia.js (Vue 3)
+- Instala dependências JS (npm)
+- Cria o link de storage
 
-## Security Vulnerabilities
+### 4. Rodar as migrations
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+make migrate
+```
 
-## License
+### 5. Acessar no navegador
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
+http://app.localhost.com
+```
+
+---
+
+## Desenvolvimento
+
+### Iniciar o Vite (hot reload)
+
+Em um terminal separado:
+
+```bash
+make dev
+```
+
+O servidor Vite ficará disponível em `http://localhost:5173` e o hot reload funcionará automaticamente em `http://app.localhost.com`.
+
+---
+
+## Comandos disponíveis
+
+```bash
+make help          # Lista todos os comandos
+```
+
+| Comando            | Descrição                             |
+|--------------------|---------------------------------------|
+| `make build`       | Builda as imagens Docker              |
+| `make up`          | Sobe os containers                    |
+| `make down`        | Derruba os containers                 |
+| `make restart`     | Reinicia os containers                |
+| `make install`     | Instala dependências + configura app  |
+| `make migrate`     | Roda as migrations                    |
+| `make fresh`       | migrate:fresh --seed                  |
+| `make seed`        | Roda os seeders                       |
+| `make bash`        | Shell no container PHP                |
+| `make tinker`      | Laravel Tinker                        |
+| `make npm`         | Instala dependências JS               |
+| `make dev`         | Inicia o Vite com hot reload          |
+| `make test`        | Roda os testes                        |
+| `make logs`        | Exibe logs dos containers             |
+| `make ps`          | Lista containers em execução          |
+| `make permissions` | Corrige permissões de storage         |
+
+---
+
+## Serviços Docker
+
+| Serviço   | Container       | Acesso                      |
+|-----------|-----------------|-----------------------------|
+| PHP-FPM   | analise_app     | interno (porta 9000)        |
+| Nginx     | analise_nginx   | http://app.localhost.com    |
+| MySQL     | analise_mysql   | localhost:3306              |
+| Redis     | analise_redis   | interno                     |
+| Node/Vite | analise_node    | localhost:5173 (`make dev`) |
+
+### Credenciais do banco (desenvolvimento)
+
+| Campo    | Valor        |
+|----------|--------------|
+| Host     | `mysql`      |
+| Database | `analise_ai` |
+| Username | `analise`    |
+| Password | `secret`     |
+| Root pw  | `root`       |
+
+---
+
+## Resolução de problemas
+
+**Permissões de storage:**
+```bash
+make permissions
+```
+
+**Containers não sobem / erro de porta 80:**
+```bash
+sudo lsof -i :80
+make down && make up
+```
+
+**Erro de conexão com banco após `make up`:**
+
+O MySQL demora alguns segundos para inicializar. Aguarde e tente novamente:
+```bash
+make migrate
+```
+
+**Recriar tudo do zero:**
+```bash
+make down
+docker volume rm analise-ai_mysql_data analise-ai_redis_data
+make build && make up && make install && make migrate
+```

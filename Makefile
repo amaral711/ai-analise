@@ -43,7 +43,7 @@ restart:
 
 install:
 	@echo ">>> Configurando .env..."
-	@cp -n .env.example .env || true
+	cp .env.example .env
 	@echo ">>> Instalando dependencias PHP..."
 	$(DC) run --rm --no-deps app composer install
 	@echo ">>> Gerando APP_KEY..."
