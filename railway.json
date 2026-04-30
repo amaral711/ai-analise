@@ -3,7 +3,7 @@
   "services": {
     "laravel": {
       "build": {
-        "dockerfilePath": "Dockerfile.railway"
+        "dockerfilePath": "Dockerfile"
       },
       "deploy": {
         "healthcheckPath": "/",
