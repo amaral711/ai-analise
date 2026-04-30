@@ -1,11 +1,18 @@
 # syntax=docker/dockerfile:1
 
+# ---- Composer dependencies ----
+FROM composer:2 AS composer
+WORKDIR /app
+COPY composer*.json ./
+RUN composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader
+
 # ---- Build frontend ----
 FROM node:20-alpine AS frontend
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+COPY --from=composer /app/vendor ./vendor
 RUN npm run build
 
 # ---- PHP + Nginx (production) ----
