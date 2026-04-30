@@ -6,10 +6,10 @@ defineProps({
     analyses: Object,
 });
 
-const classificationMap = {
-    human:        { label: 'Humano',        bg: 'bg-green-100',  text: 'text-green-700'  },
-    inconclusive: { label: 'Inconclusivo',  bg: 'bg-yellow-100', text: 'text-yellow-700' },
-    ai:           { label: 'Gerado por IA', bg: 'bg-red-100',    text: 'text-red-700'    },
+const classificationConfig = {
+    human:        { label: 'Humano',        bg: 'bg-emerald-500/15', text: 'text-emerald-400', dot: 'bg-emerald-400', border: 'border-emerald-500/25' },
+    inconclusive: { label: 'Inconclusivo',  bg: 'bg-amber-500/15',   text: 'text-amber-400',   dot: 'bg-amber-400',   border: 'border-amber-500/25'   },
+    ai:           { label: 'Gerado por IA', bg: 'bg-red-500/15',     text: 'text-red-400',     dot: 'bg-red-400',     border: 'border-red-500/25'     },
 };
 
 function formatDate(dateStr) {
@@ -19,7 +19,7 @@ function formatDate(dateStr) {
     });
 }
 
-function truncate(text, len = 100) {
+function truncate(text, len = 90) {
     return text.length > len ? text.slice(0, len) + '...' : text;
 }
 </script>
@@ -30,100 +30,123 @@ function truncate(text, len = 100) {
     <AuthenticatedLayout>
         <template #header>
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Histórico de Análises
-                </h2>
+                <div>
+                    <h1 class="text-zinc-100 text-base font-semibold">Histórico de Análises</h1>
+                    <p class="text-zinc-500 text-sm mt-0.5">
+                        {{ analyses.total }} análise{{ analyses.total !== 1 ? 's' : '' }} realizadas
+                    </p>
+                </div>
                 <Link
                     :href="route('dashboard')"
-                    class="text-sm text-indigo-600 hover:text-indigo-800 underline"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-violet-600 text-white hover:bg-violet-500 transition-colors"
                 >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
                     Nova análise
                 </Link>
             </div>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
+        <div class="p-6 lg:p-10">
+            <div class="max-w-5xl mx-auto">
 
-                <!-- Estado vazio -->
-                <div
-                    v-if="analyses.data.length === 0"
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
-                >
-                    <div class="p-12 text-center">
-                        <p class="text-gray-500 mb-4">Nenhuma análise realizada ainda.</p>
+                <!-- Empty state -->
+                <div v-if="analyses.data.length === 0" class="rounded-xl border border-zinc-800 bg-zinc-900">
+                    <div class="py-20 flex flex-col items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-zinc-800 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.25">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-zinc-300 font-medium">Nenhuma análise ainda</p>
+                            <p class="text-zinc-500 text-sm mt-1">Faça sua primeira análise para ver o histórico aqui.</p>
+                        </div>
                         <Link
                             :href="route('dashboard')"
-                            class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-violet-600 text-white hover:bg-violet-500 transition-colors mt-1"
                         >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                            </svg>
                             Fazer primeira análise
                         </Link>
                     </div>
                 </div>
 
-                <!-- Tabela -->
-                <div v-else class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Texto
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Score
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Classificação
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Data
-                                </th>
-                                <th class="px-6 py-3"></th>
+                <!-- Table -->
+                <div v-else class="rounded-xl border border-zinc-800 bg-zinc-900 overflow-hidden">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-zinc-800">
+                                <th class="px-6 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">Imagem</th>
+                                <th class="px-4 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">Score</th>
+                                <th class="px-4 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">Classificação</th>
+                                <th class="px-4 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider hidden sm:table-cell">Data</th>
+                                <th class="px-4 py-3.5"></th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="divide-y divide-zinc-800/60">
                             <tr
                                 v-for="item in analyses.data"
                                 :key="item.id"
-                                class="hover:bg-gray-50"
+                                class="hover:bg-zinc-800/30 transition-colors group"
                             >
                                 <td class="px-6 py-4 max-w-xs">
-                                    <p class="text-sm text-gray-700 truncate">{{ truncate(item.text) }}</p>
+                                    <p class="text-sm text-zinc-300 truncate">{{ truncate(item.text) }}</p>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="text-sm font-medium text-gray-900">
-                                        {{ Math.round(item.ai_score * 100) }}%
-                                    </span>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-12 h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+                                            <div
+                                                class="h-full rounded-full"
+                                                :class="classificationConfig[item.classification].dot"
+                                                :style="{ width: Math.round(item.ai_score * 100) + '%', opacity: 0.7 }"
+                                            ></div>
+                                        </div>
+                                        <span class="text-sm font-semibold text-zinc-200 tabular-nums">
+                                            {{ Math.round(item.ai_score * 100) }}%
+                                        </span>
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-4 py-4 whitespace-nowrap">
                                     <span
-                                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                                        :class="[classificationMap[item.classification].bg, classificationMap[item.classification].text]"
+                                        class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border"
+                                        :class="[
+                                            classificationConfig[item.classification].bg,
+                                            classificationConfig[item.classification].text,
+                                            classificationConfig[item.classification].border,
+                                        ]"
                                     >
-                                        {{ classificationMap[item.classification].label }}
+                                        <span class="w-1.5 h-1.5 rounded-full" :class="classificationConfig[item.classification].dot"></span>
+                                        {{ classificationConfig[item.classification].label }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ formatDate(item.created_at) }}
+                                <td class="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
+                                    <span class="text-xs text-zinc-500">{{ formatDate(item.created_at) }}</span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                <td class="px-4 py-4 whitespace-nowrap text-right">
                                     <Link
                                         :href="route('analyses.show', item.id)"
-                                        class="text-indigo-600 hover:text-indigo-900 font-medium"
+                                        class="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 hover:text-violet-400 group-hover:text-zinc-300 transition-colors"
                                     >
                                         Ver
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                        </svg>
                                     </Link>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <!-- Paginação -->
+                    <!-- Pagination -->
                     <div
                         v-if="analyses.last_page > 1"
-                        class="border-t border-gray-200 px-6 py-3 flex items-center justify-between"
+                        class="border-t border-zinc-800 px-6 py-3.5 flex items-center justify-between"
                     >
-                        <p class="text-sm text-gray-500">
+                        <p class="text-xs text-zinc-500">
                             {{ analyses.total }} análise{{ analyses.total !== 1 ? 's' : '' }} no total
                         </p>
                         <div class="flex gap-1">
@@ -132,10 +155,10 @@ function truncate(text, len = 100) {
                                 :key="link.label"
                                 :href="link.url ?? ''"
                                 v-html="link.label"
-                                class="px-3 py-1 text-sm rounded border"
+                                class="px-3 py-1.5 text-xs rounded-lg border transition-colors"
                                 :class="link.active
-                                    ? 'bg-indigo-600 text-white border-indigo-600'
-                                    : 'text-gray-600 border-gray-300 hover:bg-gray-50'"
+                                    ? 'bg-violet-600 text-white border-violet-600'
+                                    : 'text-zinc-400 border-zinc-700 hover:bg-zinc-800 hover:text-zinc-100'"
                                 :aria-disabled="!link.url"
                             />
                         </div>

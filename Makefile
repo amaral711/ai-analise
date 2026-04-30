@@ -3,7 +3,7 @@ APP      = $(DC) exec app
 ARTISAN  = $(APP) php artisan
 
 .PHONY: help up down build restart install setup migrate fresh seed \
-        bash tinker npm dev test logs ps permissions
+        bash tinker npm dev test logs ps permissions ai-logs ai-bash
 
 help:
 	@echo ""
@@ -23,6 +23,8 @@ help:
 	@echo "  make logs        Exibe logs dos containers"
 	@echo "  make ps          Lista containers"
 	@echo "  make permissions Corrige permissoes de storage"
+	@echo "  make ai-logs     Logs do servico Python (modelo HF)"
+	@echo "  make ai-bash     Shell no container Python"
 	@echo ""
 
 ## ─── Infra ───────────────────────────────────────────────────────────────────
@@ -101,3 +103,11 @@ ps:
 permissions:
 	$(APP) chmod -R 775 storage bootstrap/cache
 	$(APP) chown -R www-data:www-data storage bootstrap/cache
+
+## ─── AI Service (Python/HuggingFace) ────────────────────────────────────────
+
+ai-logs:
+	$(DC) logs -f python-ai
+
+ai-bash:
+	$(DC) exec python-ai bash

@@ -73,6 +73,25 @@ services:
       - analise_network
     command: npm run dev
 
+  python-ai:
+    build:
+      context: .
+      dockerfile: docker/python/Dockerfile
+    container_name: analise_python
+    restart: unless-stopped
+    volumes:
+      - huggingface_cache:/cache/huggingface
+    networks:
+      - analise_network
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 240s
+
 networks:
   analise_network:
     driver: bridge
@@ -80,3 +99,4 @@ networks:
 volumes:
   mysql_data:
   redis_data:
+  huggingface_cache:

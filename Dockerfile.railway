@@ -1,0 +1,68 @@
+# syntax=docker/dockerfile:1
+
+# ---- Build frontend ----
+FROM node:20-alpine AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# ---- PHP + Nginx (production) ----
+FROM php:8.4-fpm
+
+RUN apt-get update && apt-get install -y \
+    nginx \
+    supervisor \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    libicu-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install \
+        pdo_mysql \
+        mbstring \
+        exif \
+        pcntl \
+        bcmath \
+        gd \
+        zip \
+        intl \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+
+COPY . .
+
+RUN composer install --optimize-autoloader --no-dev --no-interaction
+
+# Copia assets buildados do estágio anterior
+COPY --from=frontend /app/public/build ./public/build
+
+# Configurações do Nginx e Supervisor
+COPY docker/nginx/railway.conf /etc/nginx/conf.d/default.conf
+COPY docker/supervisor/railway.conf /etc/supervisor/conf.d/railway.conf
+
+# Remove config padrão do Nginx
+RUN rm -f /etc/nginx/sites-enabled/default
+
+COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
+
+COPY docker/php/start.sh /start.sh
+RUN chmod +x /start.sh
+
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+EXPOSE 80
+
+CMD ["/start.sh"]

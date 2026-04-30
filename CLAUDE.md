@@ -93,16 +93,127 @@ Configure o Laravel com:
 
 ---
 
-### 7. 🚫 Restrições importantes
+## 🧠 7. Funcionalidade principal: análise de texto (detecção de IA)
+
+Implemente a base funcional do sistema de análise de texto.
+
+### 📌 Endpoint
+
+Criar endpoint protegido por autenticação:
+
+    POST /analyze
+
+---
+
+### 📥 Input
+
+    {
+      "text": "string"
+    }
+
+---
+
+### 📤 Output esperado
+
+    {
+      "ai_score": 0.0-1.0,
+      "classification": "human | ai | inconclusive",
+      "explanation": [
+        "motivo 1",
+        "motivo 2"
+      ]
+    }
+
+---
+
+### 🧩 Service de análise
+
+Criar uma classe:
+
+    App\Services\AiDetectionService
+
+Responsabilidades:
+
+- Receber o texto
+- Realizar análise (mock inicial OU integração com API externa)
+- Retornar score + classificação + explicação
+
+---
+
+### 🧮 Lógica do MVP
+
+- Gerar um score entre 0 e 1
+- Classificar com base no score:
+
+    0.0 – 0.4 → human  
+    0.4 – 0.7 → inconclusive  
+    0.7 – 1.0 → ai  
+
+---
+
+### 💬 Explicação
+
+Gerar explicações simples e interpretáveis, como:
+
+- "Baixa variação de vocabulário"
+- "Estrutura muito previsível"
+- "Frases com padrão repetitivo"
+
+---
+
+### 💾 Persistência
+
+Criar tabela:
+
+    analyses
+
+Campos:
+
+    id
+    user_id
+    text
+    ai_score
+    classification
+    explanation (json)
+    created_at
+
+---
+
+### 🔐 Autenticação
+
+- Usuário deve estar autenticado para realizar análise  
+- Relacionar cada análise ao usuário  
+
+---
+
+### 🖥️ Interface (Inertia)
+
+Criar páginas:
+
+**Dashboard**
+- textarea para input
+- botão "Analisar"
+
+**Resultado**
+- score
+- classificação
+- explicação
+
+**Histórico**
+- lista de análises do usuário
+
+---
+
+## 🚫 8. Restrições importantes
 
 - NÃO utilizar filas (queues)  
 - NÃO implementar processamento assíncrono  
-- Todas as requisições devem ser **síncronas**  
+- Todas as requisições devem ser síncronas  
 - Manter o projeto simples (MVP)  
 
 ---
 
-### 8. 📘 Instruções
+## 📘 9. Instruções
 
 Inclua passo a passo claro para:
 
@@ -113,7 +224,7 @@ Inclua passo a passo claro para:
 
 ---
 
-### 9. ✅ Boas práticas
+## ✅ 10. Boas práticas
 
 - evitar problemas de permissão  
 - usar volumes corretamente  
@@ -123,14 +234,14 @@ Inclua passo a passo claro para:
 
 ---
 
-### 10. ✉️ Extras (opcional, mas desejado)
+## ✉️ 11. Extras (opcional, mas desejado)
 
 - Mailpit (email local)  
 - phpMyAdmin ou Adminer  
 
 ---
 
-### 11. 🧾 Estilo da resposta
+## 🧾 12. Estilo da resposta
 
 - Código completo (sem omitir partes importantes)  
 - Pronto para copiar e rodar  

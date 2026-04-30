@@ -12,6 +12,7 @@ class Analysis extends Model
     protected $fillable = [
         'user_id',
         'text',
+        'image_path',
         'ai_score',
         'classification',
         'explanation',

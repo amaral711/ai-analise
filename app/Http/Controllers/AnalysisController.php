@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AnalyzeRequest;
+use App\Http\Requests\AnalyzeImageRequest;
 use App\Models\Analysis;
 use App\Services\AiDetectionService;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -12,12 +13,24 @@ class AnalysisController extends Controller
 {
     public function __construct(private AiDetectionService $service) {}
 
-    public function store(AnalyzeRequest $request)
+    public function store(AnalyzeImageRequest $request)
     {
-        $result = $this->service->analyze($request->text);
+        $file = $request->file('image');
+
+        try {
+            $result = $this->service->analyzeImage($file);
+        } catch (\InvalidArgumentException $e) {
+            return back()->withErrors(['image' => $e->getMessage()]);
+        } catch (\RuntimeException $e) {
+            return back()->withErrors(['image' => $e->getMessage()]);
+        }
+
+        $ext       = $file->getClientOriginalExtension();
+        $imagePath = $file->storeAs('analyses', uniqid() . '.' . $ext, 'public');
 
         $analysis = $request->user()->analyses()->create([
-            'text'           => $request->text,
+            'text'           => $file->getClientOriginalName(),
+            'image_path'     => $imagePath,
             'ai_score'       => $result['ai_score'],
             'classification' => $result['classification'],
             'explanation'    => $result['explanation'],
@@ -32,6 +45,7 @@ class AnalysisController extends Controller
 
         return Inertia::render('Analysis/Result', [
             'analysis' => $analysis,
+            'imageUrl' => $analysis->image_path ? Storage::url($analysis->image_path) : null,
         ]);
     }
 

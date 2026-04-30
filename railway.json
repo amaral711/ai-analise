@@ -1,0 +1,26 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "services": {
+    "laravel": {
+      "build": {
+        "dockerfilePath": "Dockerfile.railway"
+      },
+      "deploy": {
+        "healthcheckPath": "/",
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 3
+      }
+    },
+    "python-ai": {
+      "build": {
+        "dockerfilePath": "docker/python/Dockerfile",
+        "buildContext": "."
+      },
+      "deploy": {
+        "healthcheckPath": "/health",
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 3
+      }
+    }
+  }
+}

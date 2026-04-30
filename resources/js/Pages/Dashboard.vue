@@ -1,78 +1,153 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { ref } from 'vue';
 
-const form = useForm({ text: '' });
+const form = useForm({ image: null });
 
-const charCount = computed(() => form.text.length);
-const isReady = computed(() => form.text.length >= 50);
+const preview    = ref(null);
+const selectedFile = ref(null);
+const fileError  = ref('');
+
+const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
+const ALLOWED_EXT  = /\.(jpe?g|png|webp)$/i;
+
+function onFileChange(e) {
+    const file = e.target.files[0];
+    fileError.value  = '';
+    preview.value    = null;
+    selectedFile.value = null;
+    form.image       = null;
+
+    if (!file) return;
+
+    if (!ALLOWED_MIME.includes(file.type) && !ALLOWED_EXT.test(file.name)) {
+        fileError.value = 'Formato inválido. Use JPG, PNG ou WebP.';
+        return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+        fileError.value = 'Imagem maior que 10 MB.';
+        return;
+    }
+
+    selectedFile.value = file;
+    form.image         = file;
+    preview.value      = URL.createObjectURL(file);
+}
 
 function submit() {
-    form.post(route('analyses.store'));
+    form.post(route('analyses.store'), { forceFormData: true });
 }
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Nova Análise" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Análise de Texto
-            </h2>
+            <div>
+                <h1 class="text-zinc-100 text-base font-semibold">Nova Análise</h1>
+                <p class="text-zinc-500 text-sm mt-0.5">Detecte se uma imagem foi gerada por inteligência artificial</p>
+            </div>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <p class="mb-6 text-sm text-gray-600">
-                            Cole ou digite um texto abaixo para verificar se ele foi gerado por inteligência artificial.
-                        </p>
+        <div class="p-6 lg:p-10">
+            <div class="max-w-2xl mx-auto space-y-6">
 
-                        <form @submit.prevent="submit" class="space-y-4">
-                            <div>
-                                <textarea
-                                    v-model="form.text"
-                                    rows="12"
-                                    placeholder="Cole o texto aqui... (mínimo 50 caracteres)"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 resize-none"
-                                ></textarea>
+                <!-- Info pills -->
+                <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+                        Análise síncrona
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                        Suporta JPG, PNG, WebP
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+                        Máx. 10 MB
+                    </span>
+                </div>
 
-                                <div class="mt-1 flex items-center justify-between">
-                                    <InputError :message="form.errors.text" />
-                                    <span
-                                        class="ml-auto text-xs"
-                                        :class="charCount < 50 ? 'text-red-400' : 'text-gray-400'"
-                                    >
-                                        {{ charCount.toLocaleString() }} / 10.000
-                                    </span>
+                <!-- Card -->
+                <div class="rounded-xl border border-zinc-800 bg-zinc-900 overflow-hidden">
+                    <form @submit.prevent="submit" class="p-6 space-y-5">
+
+                        <!-- Drop zone / preview -->
+                        <label
+                            class="flex flex-col items-center justify-center w-full rounded-xl cursor-pointer transition-all duration-200 overflow-hidden"
+                            :class="preview
+                                ? 'border border-violet-500 bg-violet-500/5 min-h-[280px]'
+                                : 'border-2 border-dashed border-zinc-700 hover:border-zinc-500 bg-zinc-950 hover:bg-zinc-900 h-52'"
+                        >
+                            <!-- Preview -->
+                            <div v-if="preview" class="relative w-full">
+                                <img :src="preview" alt="Preview" class="w-full max-h-72 object-contain" />
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-zinc-900/90 to-transparent px-4 py-3">
+                                    <p class="text-xs text-violet-300 font-medium truncate">{{ selectedFile.name }}</p>
+                                    <p class="text-xs text-zinc-500">Clique para trocar</p>
                                 </div>
                             </div>
 
-                            <div class="flex items-center justify-between">
-                                <a
-                                    :href="route('analyses.index')"
-                                    class="text-sm text-indigo-600 hover:text-indigo-800 underline"
-                                >
-                                    Ver histórico de análises
-                                </a>
-
-                                <PrimaryButton
-                                    type="submit"
-                                    :disabled="form.processing || !isReady"
-                                    class="px-6"
-                                >
-                                    <span v-if="form.processing">Analisando...</span>
-                                    <span v-else>Analisar Texto</span>
-                                </PrimaryButton>
+                            <!-- Empty state -->
+                            <div v-else class="flex flex-col items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-sm text-zinc-400">Clique para selecionar ou arraste a imagem</p>
+                                    <p class="text-xs text-zinc-600 mt-1">JPG, PNG, WebP — máx. 10 MB</p>
+                                </div>
                             </div>
-                        </form>
-                    </div>
+
+                            <input type="file" class="hidden" accept=".jpg,.jpeg,.png,.webp,image/*" @change="onFileChange" />
+                        </label>
+
+                        <!-- Errors -->
+                        <p v-if="fileError" class="text-sm text-red-400 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                            </svg>
+                            {{ fileError }}
+                        </p>
+                        <InputError :message="form.errors.image" />
+
+                        <!-- Footer -->
+                        <div class="flex items-center justify-between pt-1">
+                            <a :href="route('analyses.index')" class="text-sm text-zinc-500 hover:text-violet-400 transition-colors flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                Ver histórico
+                            </a>
+                            <button
+                                type="submit"
+                                :disabled="form.processing || !selectedFile"
+                                class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all
+                                       bg-violet-600 text-white hover:bg-violet-500 active:bg-violet-700
+                                       disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                <svg v-if="form.processing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                </svg>
+                                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>
+                                {{ form.processing ? 'Analisando...' : 'Analisar Imagem' }}
+                            </button>
+                        </div>
+
+                    </form>
                 </div>
+
+                <p class="text-center text-xs text-zinc-600">
+                    A análise é realizada de forma síncrona — o resultado aparece imediatamente após o envio.
+                </p>
             </div>
         </div>
     </AuthenticatedLayout>
