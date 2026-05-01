@@ -55,12 +55,12 @@ RUN composer install --optimize-autoloader --no-dev --no-interaction
 # Copia assets buildados do estágio anterior
 COPY --from=frontend /app/public/build ./public/build
 
-# Configurações do Nginx e Supervisor
-COPY docker/nginx/railway.conf /etc/nginx/conf.d/default.conf
-COPY docker/supervisor/railway.conf /etc/supervisor/conf.d/railway.conf
+# Remove todas as configs padrão do Nginx
+RUN rm -rf /etc/nginx/sites-enabled/* /etc/nginx/sites-available/* /etc/nginx/conf.d/*
 
-# Remove config padrão do Nginx
-RUN rm -f /etc/nginx/sites-enabled/default
+# Configurações do Nginx e Supervisor
+COPY docker/nginx/railway.conf /etc/nginx/conf.d/app.conf
+COPY docker/supervisor/railway.conf /etc/supervisor/conf.d/railway.conf
 
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
