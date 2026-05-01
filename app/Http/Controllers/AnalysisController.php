@@ -25,8 +25,10 @@ class AnalysisController extends Controller
             return back()->withErrors(['image' => $e->getMessage()]);
         }
 
-        $ext       = $file->getClientOriginalExtension();
-        $imagePath = $file->storeAs('analyses', uniqid() . '.' . $ext);
+        $ext      = $file->getClientOriginalExtension();
+        $filename = uniqid() . '.' . $ext;
+
+        $imagePath = Storage::disk('s3')->putFileAs('', $file, $filename, 'public');
 
         $analysis = $request->user()->analyses()->create([
             'text'           => $file->getClientOriginalName(),
@@ -45,7 +47,7 @@ class AnalysisController extends Controller
 
         return Inertia::render('Analysis/Result', [
             'analysis' => $analysis,
-            'imageUrl' => $analysis->image_path ? Storage::url($analysis->image_path) : null,
+            'imageUrl' => $analysis->image_path ? Storage::disk('s3')->url($analysis->image_path) : null,
         ]);
     }
 
