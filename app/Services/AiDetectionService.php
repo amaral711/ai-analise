@@ -17,10 +17,14 @@ class AiDetectionService
 
     public function analyzeImage(UploadedFile $file): array
     {
+        Log::info('AI analysis start', ['url' => $this->pythonUrl, 'file' => $file->getClientOriginalName()]);
+
         try {
             $response = Http::timeout(60)
                 ->attach('file', file_get_contents($file->path()), $file->getClientOriginalName())
                 ->post($this->pythonUrl . '/detect/image');
+
+            Log::info('AI response', ['status' => $response->status(), 'body' => $response->body()]);
 
             if ($response->successful()) {
                 return $this->buildResult($response->json());
@@ -34,7 +38,7 @@ class AiDetectionService
         } catch (\InvalidArgumentException $e) {
             throw $e;
         } catch (\Exception $e) {
-            Log::warning('Python AI service unavailable', ['error' => $e->getMessage()]);
+            Log::warning('Python AI service unavailable', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
 
         throw new \RuntimeException('Serviço de análise indisponível. Tente novamente.');
