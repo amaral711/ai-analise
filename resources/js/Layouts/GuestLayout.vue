@@ -3,13 +3,16 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="min-h-screen flex bg-zinc-950">
+    <div class="min-h-screen flex bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 relative overflow-hidden">
+
+        <!-- Background orbs (visible on mobile too) -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-violet-600/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-violet-800/10 blur-3xl pointer-events-none"></div>
 
         <!-- Left panel -->
-        <div class="hidden lg:flex lg:w-1/2 xl:w-2/5 flex-col justify-between p-12 bg-zinc-900 border-r border-zinc-800 relative overflow-hidden">
-            <!-- Subtle gradient orb -->
-            <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-violet-600/10 blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-violet-800/10 blur-3xl pointer-events-none"></div>
+        <div class="hidden lg:flex lg:w-1/2 xl:w-2/5 flex-col justify-between p-12 bg-zinc-900/80 border-r border-zinc-800 relative overflow-hidden">
+            <!-- Desktop-only extra orb -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-violet-700/5 blur-3xl pointer-events-none"></div>
 
             <!-- Logo -->
             <Link href="/" class="flex items-center gap-3 relative z-10">
