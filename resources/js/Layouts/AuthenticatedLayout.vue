@@ -44,7 +44,7 @@ const navItems = [
                     </svg>
                 </div>
                 <div>
-                    <span class="text-white font-semibold text-sm tracking-tight">VeriCord</span>
+                    <span class="text-white font-semibold text-sm tracking-tight">DeepScan</span>
                     <p class="text-zinc-500 text-[10px] leading-none mt-0.5">Detector de conteúdo IA</p>
                 </div>
             </div>
@@ -106,7 +106,7 @@ const navItems = [
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
-                <span class="text-white font-semibold text-sm">VeriCord</span>
+                <span class="text-white font-semibold text-sm">DeepScan</span>
             </div>
 
             <!-- Page header -->
