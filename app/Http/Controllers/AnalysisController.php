@@ -26,7 +26,7 @@ class AnalysisController extends Controller
         }
 
         $ext       = $file->getClientOriginalExtension();
-        $imagePath = $file->storeAs('analyses', uniqid() . '.' . $ext, 'public');
+        $imagePath = $file->storeAs('analyses', uniqid() . '.' . $ext);
 
         $analysis = $request->user()->analyses()->create([
             'text'           => $file->getClientOriginalName(),
@@ -45,7 +45,7 @@ class AnalysisController extends Controller
 
         return Inertia::render('Analysis/Result', [
             'analysis' => $analysis,
-            'imageUrl' => $analysis->image_path ? Storage::disk('public')->url($analysis->image_path) : null,
+            'imageUrl' => $analysis->image_path ? Storage::url($analysis->image_path) : null,
         ]);
     }
 
