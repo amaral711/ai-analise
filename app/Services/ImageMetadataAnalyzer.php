@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Services;
+
+use Illuminate\Http\UploadedFile;
+
+class ImageMetadataAnalyzer
+{
+    private const WHATSAPP_MAX_SIZE_BYTES = 300 * 1024;
+
+    private const SCREENSHOT_SOFTWARE_KEYWORDS = ['apple', 'android', 'microsoft', 'screenshot', 'miui', 'samsung', 'oneui'];
+
+    // Common mobile portrait resolutions (width x height)
+    private const MOBILE_RESOLUTIONS = [
+        [750, 1334], [828, 1792], [1080, 1920], [1080, 2160], [1080, 2220],
+        [1080, 2340], [1080, 2400], [1170, 2532], [1179, 2556], [1206, 2622],
+        [1242, 2688], [1284, 2778], [1290, 2796], [1440, 2560], [1440, 3040],
+        [1440, 3088], [1440, 3200],
+    ];
+
+    // Common desktop resolutions
+    private const DESKTOP_RESOLUTIONS = [
+        [1280, 720], [1366, 768], [1920, 1080], [2560, 1080],
+        [2560, 1440], [3840, 2160], [2560, 1600], [2880, 1800],
+    ];
+
+    public function analyze(UploadedFile $file): array
+    {
+        $observations = [];
+
+        $mime = $file->getMimeType();
+        $exif = in_array($mime, ['image/jpeg', 'image/jpg'])
+            ? (@exif_read_data($file->path(), null, true) ?: [])
+            : [];
+
+        $dimensions = @getimagesize($file->path()) ?: null;
+
+        if ($this->isWhatsAppCompressed($file, $exif, $dimensions)) {
+            $observations[] = 'Imagem parece ter sido comprimida e redimensionada pelo WhatsApp, o que pode reduzir a precisão da análise. Para resultados mais confiáveis, envie a imagem original.';
+        } elseif ($this->isScreenshot($file, $exif, $dimensions)) {
+            $observations[] = 'Imagem parece ser um screenshot. Capturas de tela podem conter padrões visuais que confundem detectores de IA. Para melhor análise, envie a imagem original gerada.';
+        }
+
+        return $observations;
+    }
+
+    private function isWhatsAppCompressed(UploadedFile $file, array $exif, ?array $dimensions): bool
+    {
+        // Primary: Software tag explicitly set by WhatsApp
+        $software = $exif['IFD0']['Software'] ?? '';
+        if (stripos($software, 'WhatsApp') !== false) {
+            return true;
+        }
+
+        // Heuristic combination: stripped EXIF + WhatsApp dimension cap + small file
+        return $this->hasStrippedExif($exif)
+            && $this->isWithinWhatsAppDimensions($dimensions)
+            && $file->getSize() < self::WHATSAPP_MAX_SIZE_BYTES;
+    }
+
+    private function isScreenshot(UploadedFile $file, array $exif, ?array $dimensions): bool
+    {
+        // Primary: Software tag matches known OS/screenshot keywords
+        $software = strtolower($exif['IFD0']['Software'] ?? '');
+        foreach (self::SCREENSHOT_SOFTWARE_KEYWORDS as $keyword) {
+            if (str_contains($software, $keyword)) {
+                return $this->hasStrippedExif($exif);
+            }
+        }
+
+        // Heuristic: PNG (screenshots are rarely JPEG) + no camera metadata + matches known screen resolution
+        if ($file->getMimeType() === 'image/png' && $this->hasStrippedExif($exif)) {
+            return $this->matchesScreenResolution($dimensions);
+        }
+
+        return false;
+    }
+
+    private function hasStrippedExif(array $exif): bool
+    {
+        $hasCamera   = isset($exif['IFD0']['Make']) || isset($exif['IFD0']['Model']);
+        $hasGps      = isset($exif['GPS']);
+        $hasDatetime = isset($exif['EXIF']['DateTimeOriginal']);
+
+        return ! $hasCamera && ! $hasGps && ! $hasDatetime;
+    }
+
+    private function isWithinWhatsAppDimensions(?array $dimensions): bool
+    {
+        if (! $dimensions) {
+            return false;
+        }
+
+        return max($dimensions[0], $dimensions[1]) <= 1600;
+    }
+
+    private function matchesScreenResolution(?array $dimensions): bool
+    {
+        if (! $dimensions) {
+            return false;
+        }
+
+        [$w, $h] = [$dimensions[0], $dimensions[1]];
+        $all = array_merge(
+            self::MOBILE_RESOLUTIONS,
+            array_map(fn ($r) => [$r[1], $r[0]], self::MOBILE_RESOLUTIONS), // landscape variants
+            self::DESKTOP_RESOLUTIONS,
+            array_map(fn ($r) => [$r[1], $r[0]], self::DESKTOP_RESOLUTIONS),
+        );
+
+        foreach ($all as [$rw, $rh]) {
+            if ($w === $rw && $h === $rh) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

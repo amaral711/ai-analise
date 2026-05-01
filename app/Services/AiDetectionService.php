@@ -10,7 +10,7 @@ class AiDetectionService
 {
     private string $pythonUrl;
 
-    public function __construct()
+    public function __construct(private ImageMetadataAnalyzer $metadataAnalyzer)
     {
         $this->pythonUrl = rtrim(config('services.python_ai.url', 'http://python-ai:8001'), '/');
     }
@@ -18,6 +18,8 @@ class AiDetectionService
     public function analyzeImage(UploadedFile $file): array
     {
         Log::info('AI analysis start', ['url' => $this->pythonUrl, 'file' => $file->getClientOriginalName()]);
+
+        $metadataObservations = $this->metadataAnalyzer->analyze($file);
 
         try {
             $response = Http::timeout(60)
@@ -27,7 +29,7 @@ class AiDetectionService
             Log::info('AI response', ['status' => $response->status(), 'body' => $response->body()]);
 
             if ($response->successful()) {
-                return $this->buildResult($response->json());
+                return $this->buildResult($response->json(), $metadataObservations);
             }
 
             if ($response->status() === 400 || $response->status() === 422) {
@@ -44,7 +46,7 @@ class AiDetectionService
         throw new \RuntimeException('Serviço de análise indisponível. Tente novamente.');
     }
 
-    private function buildResult(array $data): array
+    private function buildResult(array $data, array $metadataObservations = []): array
     {
         $aiScore = round((float) ($data['ai_score'] ?? 0.5), 2);
 
@@ -69,6 +71,10 @@ class AiDetectionService
 
         $model = $data['model'] ?? 'desconhecido';
         $explanation[] = "Modelo utilizado: {$model}";
+
+        foreach ($metadataObservations as $observation) {
+            $explanation[] = "⚠️ Observação: {$observation}";
+        }
 
         return [
             'ai_score'       => $aiScore,
