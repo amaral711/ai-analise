@@ -55,8 +55,8 @@ import { Link } from '@inertiajs/vue3';
         <div class="flex-1 flex flex-col items-center justify-center p-6 sm:p-12">
             <!-- Mobile logo -->
             <Link href="/" class="flex items-center gap-2 mb-8 lg:hidden">
-                <img src="/logo.jpeg" alt="DeepScan" class="w-8 h-8 rounded-lg object-cover" />
-                <span class="text-white font-semibold">DeepScan</span>
+                <img src="/logo.jpeg" alt="DeepScan" class="w-12 h-12 rounded-xl object-cover" />
+                <span class="text-white font-semibold text-lg">DeepScan</span>
             </Link>
 
             <div class="w-full max-w-sm">
