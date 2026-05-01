@@ -45,7 +45,7 @@ class AnalysisController extends Controller
 
         return Inertia::render('Analysis/Result', [
             'analysis' => $analysis,
-            'imageUrl' => $analysis->image_path ? url(Storage::url($analysis->image_path)) : null,
+            'imageUrl' => $analysis->image_path ? Storage::disk('public')->url($analysis->image_path) : null,
         ]);
     }
 

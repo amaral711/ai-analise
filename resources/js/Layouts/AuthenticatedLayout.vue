@@ -38,11 +38,7 @@ const navItems = [
         >
             <!-- Logo -->
             <div class="flex items-center gap-3 px-5 py-4 border-b border-zinc-800">
-                <div class="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
-                    </svg>
-                </div>
+                <img src="/logo.jpeg" alt="DeepScan" class="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
                 <div>
                     <span class="text-white font-semibold text-sm tracking-tight">DeepScan</span>
                     <p class="text-zinc-500 text-[10px] leading-none mt-0.5">Detector de conteúdo IA</p>
@@ -106,6 +102,7 @@ const navItems = [
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
+                <img src="/logo.jpeg" alt="DeepScan" class="w-7 h-7 rounded-lg object-cover" />
                 <span class="text-white font-semibold text-sm">DeepScan</span>
             </div>
 
