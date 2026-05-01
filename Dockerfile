@@ -1,75 +1,48 @@
-# syntax=docker/dockerfile:1
+FROM php:8.4-fpm-alpine
 
-# ---- Composer dependencies ----
-FROM composer:2 AS composer
-WORKDIR /app
-COPY composer*.json ./
-RUN composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader
+# System deps
+RUN apk add --no-cache \
+    nginx supervisor nodejs npm \
+    libpng-dev libjpeg-turbo-dev freetype-dev \
+    libzip-dev libxml2-dev icu-dev oniguruma-dev \
+    autoconf g++ make
 
-# ---- Build frontend ----
-FROM node:20-alpine AS frontend
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-COPY --from=composer /app/vendor ./vendor
-RUN npm run build
+# PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache && \
+    pecl install redis && docker-php-ext-enable redis && \
+    apk del autoconf g++ make
 
-# ---- PHP + Nginx (production) ----
-FROM php:8.4-fpm
-
-RUN apt-get update && apt-get install -y \
-    nginx \
-    supervisor \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    libicu-dev \
-    zip \
-    unzip \
-    && docker-php-ext-install \
-        pdo_mysql \
-        mbstring \
-        exif \
-        pcntl \
-        bcmath \
-        gd \
-        zip \
-        intl \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www
+WORKDIR /var/www/html
 
+# PHP deps (layer separado para cache)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+# JS deps (layer separado para cache)
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Copia todo o código fonte
 COPY . .
 
-RUN composer install --optimize-autoloader --no-dev --no-interaction
+# Build do frontend (vendor já existe, Ziggy resolve)
+RUN npm run build
 
-# Copia assets buildados do estágio anterior
-COPY --from=frontend /app/public/build ./public/build
+# Finaliza o PHP
+RUN composer dump-autoload --optimize
 
-# Remove todas as configs padrão do Nginx
-RUN rm -rf /etc/nginx/sites-enabled/* /etc/nginx/sites-available/* /etc/nginx/conf.d/*
+# Permissões
+RUN chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
 
-# Configurações do Nginx e Supervisor
-COPY docker/nginx/railway.conf /etc/nginx/conf.d/app.conf
-COPY docker/supervisor/railway.conf /etc/supervisor/conf.d/railway.conf
-
-COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
-
+COPY docker/nginx/railway.conf /etc/nginx/http.d/default.conf
+COPY docker/supervisor/railway.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/php/start.sh /start.sh
 RUN chmod +x /start.sh
 
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
-
 EXPOSE 80
-
 CMD ["/start.sh"]

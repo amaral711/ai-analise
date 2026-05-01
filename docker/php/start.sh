@@ -1,9 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
+cd /var/www/html
+
+echo "→ Caching config/routes/views..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+echo "→ Running migrations..."
 php artisan migrate --force
 
-exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/railway.conf
+echo "→ Starting services..."
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
