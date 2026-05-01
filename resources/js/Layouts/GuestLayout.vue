@@ -13,11 +13,7 @@ import { Link } from '@inertiajs/vue3';
 
             <!-- Logo -->
             <Link href="/" class="flex items-center gap-3 relative z-10">
-                <div class="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
-                    </svg>
-                </div>
+                <img src="/logo.jpeg" alt="DeepScan" class="w-9 h-9 rounded-xl object-cover" />
                 <span class="text-white font-semibold text-lg tracking-tight">DeepScan</span>
             </Link>
 
@@ -56,11 +52,7 @@ import { Link } from '@inertiajs/vue3';
         <div class="flex-1 flex flex-col items-center justify-center p-6 sm:p-12">
             <!-- Mobile logo -->
             <Link href="/" class="flex items-center gap-2 mb-8 lg:hidden">
-                <div class="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
-                    </svg>
-                </div>
+                <img src="/logo.jpeg" alt="DeepScan" class="w-8 h-8 rounded-lg object-cover" />
                 <span class="text-white font-semibold">DeepScan</span>
             </Link>
 
