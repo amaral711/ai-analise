@@ -40,7 +40,7 @@ import { Link } from '@inertiajs/vue3';
                     </span>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs">
                         <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                        PDF, DOCX, TXT
+                        JPG, PNG, WebP
                     </span>
                 </div>
             </div>
