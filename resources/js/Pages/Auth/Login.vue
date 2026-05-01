@@ -54,13 +54,6 @@ const submit = () => {
             <div>
                 <div class="flex items-center justify-between mb-1.5">
                     <label for="password" class="block text-sm font-medium text-zinc-300">Senha</label>
-                    <Link
-                        v-if="canResetPassword"
-                        :href="route('password.request')"
-                        class="text-xs text-zinc-500 hover:text-violet-400 transition-colors"
-                    >
-                        Esqueceu a senha?
-                    </Link>
                 </div>
                 <input
                     id="password"
