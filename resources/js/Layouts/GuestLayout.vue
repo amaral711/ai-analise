@@ -54,8 +54,8 @@ import { Link } from '@inertiajs/vue3';
         <!-- Right panel (form) -->
         <div class="flex-1 flex flex-col items-center justify-center p-6 sm:p-12">
             <!-- Mobile logo -->
-            <Link href="/" class="flex items-center gap-2 mb-8 lg:hidden">
-                <img src="/logo.jpeg" alt="DeepScan" class="w-12 h-12 rounded-xl object-cover" />
+            <Link href="/" class="flex flex-col items-center gap-2 mb-8 lg:hidden">
+                <img src="/logo.jpeg" alt="DeepScan" class="w-20 h-20 rounded-2xl object-cover" />
                 <span class="text-white font-semibold text-lg">DeepScan</span>
             </Link>
 
