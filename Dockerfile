@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     nodejs npm \
     libpng-dev libonig-dev libxml2-dev libzip-dev libicu-dev \
     zip unzip curl git \
+    rustc cargo \
     && docker-php-ext-configure gd \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache \
     && pecl install redis && docker-php-ext-enable redis \
@@ -15,8 +16,8 @@ RUN apt-get update && apt-get install -y \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 COPY docker/python/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu \
-    && pip install --no-cache-dir -r /tmp/requirements.txt
+RUN pip install --no-cache-dir --prefer-binary torch --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir --prefer-binary -r /tmp/requirements.txt
 
 # Pré-baixa o modelo HuggingFace na imagem (evita download em runtime)
 ENV HF_HOME=/opt/models
