@@ -1,6 +1,13 @@
 import '../css/app.css';
 import './bootstrap';
 
+// Aplica o tema antes do Vue montar para evitar flash
+;(function () {
+    const stored = localStorage.getItem('deepscan-theme')
+    const dark = stored !== null ? stored === 'dark' : true
+    document.documentElement.classList.toggle('dark', dark)
+})()
+
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';

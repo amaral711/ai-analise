@@ -3,52 +3,51 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="min-h-screen flex bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 relative overflow-hidden">
+    <div class="min-h-screen flex bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-950 relative overflow-hidden">
 
-        <!-- Background orbs (visible on mobile too) -->
-        <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-violet-600/10 blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-violet-800/10 blur-3xl pointer-events-none"></div>
+        <!-- Background orbs -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-violet-500/8 dark:bg-violet-600/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-violet-400/8 dark:bg-violet-800/10 blur-3xl pointer-events-none"></div>
 
         <!-- Left panel -->
-        <div class="hidden lg:flex lg:w-1/2 xl:w-2/5 flex-col justify-between p-12 bg-zinc-900/80 border-r border-zinc-800 relative overflow-hidden">
-            <!-- Desktop-only extra orb -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-violet-700/5 blur-3xl pointer-events-none"></div>
+        <div class="hidden lg:flex lg:w-1/2 xl:w-2/5 flex-col justify-between p-12 bg-white/60 dark:bg-zinc-900/80 border-r border-slate-200 dark:border-zinc-800 relative overflow-hidden backdrop-blur-sm">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-violet-500/5 dark:bg-violet-700/5 blur-3xl pointer-events-none"></div>
 
             <!-- Logo -->
             <Link href="/" class="flex items-center gap-3 relative z-10">
                 <img src="/logo.jpeg" alt="DeepScan" class="w-9 h-9 rounded-xl object-cover" />
-                <span class="text-white font-semibold text-lg tracking-tight">DeepScan</span>
+                <span class="text-zinc-900 dark:text-white font-semibold text-lg tracking-tight">DeepScan</span>
             </Link>
 
             <!-- Tagline -->
             <div class="relative z-10">
-                <h1 class="text-3xl font-bold text-white leading-snug">
+                <h1 class="text-3xl font-bold text-zinc-900 dark:text-white leading-snug">
                     Detecte conteúdo<br/>
-                    <span class="text-violet-400">gerado por IA</span><br/>
+                    <span class="text-violet-600 dark:text-violet-400">gerado por IA</span><br/>
                     com precisão.
                 </h1>
-                <p class="text-zinc-400 mt-4 text-sm leading-relaxed max-w-sm">
-                    Analise textos e documentos em segundos. Obtenha um score de probabilidade com explicações detalhadas sobre os fatores identificados.
+                <p class="text-zinc-500 dark:text-zinc-400 mt-4 text-sm leading-relaxed max-w-sm">
+                    Analise textos, imagens e áudios em segundos. Obtenha um score de probabilidade com explicações detalhadas sobre os fatores identificados.
                 </p>
 
                 <!-- Feature pills -->
                 <div class="flex flex-wrap gap-2 mt-6">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 text-xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"></span>
                         Análise em tempo real
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs">
-                        <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
-                        Score detalhado
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 text-xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-violet-500 dark:bg-violet-400"></span>
+                        Texto & Imagem
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                        JPG, PNG, WebP
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 text-xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></span>
+                        Áudio & Voz
                     </span>
                 </div>
             </div>
 
-            <p class="text-zinc-600 text-xs relative z-10">© 2025 DeepScan. Todos os direitos reservados.</p>
+            <p class="text-zinc-400 dark:text-zinc-600 text-xs relative z-10">© 2026 DeepScan. Todos os direitos reservados.</p>
         </div>
 
         <!-- Right panel (form) -->
@@ -56,7 +55,7 @@ import { Link } from '@inertiajs/vue3';
             <!-- Mobile logo -->
             <Link href="/" class="flex flex-col items-center gap-2 mb-8 lg:hidden">
                 <img src="/logo.jpeg" alt="DeepScan" class="w-20 h-20 rounded-2xl object-cover" />
-                <span class="text-white font-semibold text-lg">DeepScan</span>
+                <span class="text-zinc-900 dark:text-white font-semibold text-lg">DeepScan</span>
             </Link>
 
             <div class="w-full max-w-sm">

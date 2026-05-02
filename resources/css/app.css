@@ -1,11 +1,19 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 
+/* dark: variants ativam quando html tem a classe .dark */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
     body {
-        background-color: #09090f;
-        color: #f4f4f5;
+        background-color: #f8fafc;
+        color: #18181b;
         -webkit-font-smoothing: antialiased;
+    }
+
+    .dark body {
+        background-color: #09090b;
+        color: #f4f4f5;
     }
 
     ::-webkit-scrollbar {
@@ -25,4 +33,54 @@
     ::-webkit-scrollbar-thumb:hover {
         background: #52525b;
     }
+}
+
+/* Overrides no modo claro para os cards de conteúdo das páginas */
+html:not(.dark) [data-content] .bg-zinc-900 {
+    background-color: #ffffff;
+}
+
+html:not(.dark) [data-content] .bg-zinc-950 {
+    background-color: #f8fafc;
+}
+
+html:not(.dark) [data-content] .bg-zinc-800 {
+    background-color: #f1f5f9;
+}
+
+html:not(.dark) [data-content] .border-zinc-800 {
+    border-color: #e2e8f0;
+}
+
+html:not(.dark) [data-content] .border-zinc-700 {
+    border-color: #cbd5e1;
+}
+
+html:not(.dark) [data-content] .text-zinc-100 {
+    color: #18181b;
+}
+
+html:not(.dark) [data-content] .text-zinc-200 {
+    color: #3f3f46;
+}
+
+html:not(.dark) [data-content] .text-zinc-300 {
+    color: #52525b;
+}
+
+html:not(.dark) [data-content] .text-zinc-400 {
+    color: #71717a;
+}
+
+html:not(.dark) [data-content] .placeholder-zinc-600::placeholder {
+    color: #94a3b8;
+}
+
+/* Header slot: texto adaptado ao modo claro */
+html:not(.dark) [data-layout-header] .text-zinc-100 {
+    color: #18181b;
+}
+
+html:not(.dark) [data-layout-header] .text-zinc-500 {
+    color: #64748b;
 }
