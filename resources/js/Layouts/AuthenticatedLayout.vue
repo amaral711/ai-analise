@@ -8,13 +8,23 @@ const showMobileSidebar = ref(false);
 
 const navItems = [
     {
-        label: 'Nova Análise',
+        label: 'Análise de Imagem',
         routeName: 'dashboard',
         icon: 'M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z',
     },
     {
-        label: 'Histórico',
+        label: 'Histórico de Imagens',
         routeName: 'analyses.index',
+        icon: 'M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z',
+    },
+    {
+        label: 'Análise de Áudio',
+        routeName: 'audio.upload',
+        icon: 'M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z',
+    },
+    {
+        label: 'Histórico de Áudios',
+        routeName: 'audio-analyses.index',
         icon: 'M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z',
     },
 ];

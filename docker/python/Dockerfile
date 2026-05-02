@@ -2,6 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+
 # torch CPU-only primeiro (menor imagem)
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
