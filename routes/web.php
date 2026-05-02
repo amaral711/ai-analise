@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalysisController;
+use App\Http\Controllers\AudioAnalysisController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TextAnalysisController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/analyze/text', [TextAnalysisController::class, 'store'])->name('text-analyses.store');
     Route::get('/text-analyses', [TextAnalysisController::class, 'index'])->name('text-analyses.index');
     Route::get('/text-analyses/{textAnalysis}', [TextAnalysisController::class, 'show'])->name('text-analyses.show');
+
+    Route::get('/audio', fn () => Inertia::render('Audio/Upload'))->name('audio.upload');
+    Route::post('/analyze/audio', [AudioAnalysisController::class, 'store'])->name('audio-analyses.store');
+    Route::get('/audio-analyses', [AudioAnalysisController::class, 'index'])->name('audio-analyses.index');
+    Route::get('/audio-analyses/{audioAnalysis}', [AudioAnalysisController::class, 'show'])->name('audio-analyses.show');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

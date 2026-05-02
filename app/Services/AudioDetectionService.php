@@ -8,21 +8,29 @@ use Illuminate\Support\Facades\Log;
 
 class AudioDetectionService
 {
-    private string $pythonUrl;
+    private string $url;
+    private ?string $token;
 
     public function __construct()
     {
-        $this->pythonUrl = rtrim(config('services.python_ai.url', 'http://python-ai:8001'), '/');
+        $this->url   = config('services.audio_analysis.url', 'http://audio_analysis:8002/analyze');
+        $this->token = config('services.audio_analysis.token');
     }
 
     public function analyzeAudio(UploadedFile $file): array
     {
-        Log::info('Audio AI analysis start', ['url' => $this->pythonUrl, 'file' => $file->getClientOriginalName()]);
+        Log::info('Audio AI analysis start', ['url' => $this->url, 'file' => $file->getClientOriginalName()]);
 
         try {
-            $response = Http::timeout(60)
+            $request = Http::timeout(60);
+
+            if ($this->token) {
+                $request = $request->withToken($this->token);
+            }
+
+            $response = $request
                 ->attach('file', file_get_contents($file->path()), $file->getClientOriginalName())
-                ->post($this->pythonUrl . '/detect/audio');
+                ->post($this->url);
 
             Log::info('Audio AI response', ['status' => $response->status(), 'body' => $response->body()]);
 

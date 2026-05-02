@@ -39,4 +39,9 @@ return [
         'url' => env('PYTHON_AI_URL', 'http://127.0.0.1:8001'),
     ],
 
+    'audio_analysis' => [
+        'url'   => env('AUDIO_ANALYSIS_URL', 'http://audio_analysis:8002/analyze'),
+        'token' => env('HF_TOKEN'),
+    ],
+
 ];
