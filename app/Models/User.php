@@ -28,6 +28,11 @@ class User extends Authenticatable
         return $this->hasMany(AudioAnalysis::class);
     }
 
+    public function textAnalyses(): HasMany
+    {
+        return $this->hasMany(TextAnalysis::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
