@@ -15,11 +15,12 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn () => Inertia::render('Index'))->name('dashboard');
 
-    Route::post('/analyze', [AnalysisController::class, 'store'])->name('analyses.store');
-    Route::get('/analyses', [AnalysisController::class, 'index'])->name('analyses.index');
-    Route::get('/analyses/{analysis}', [AnalysisController::class, 'show'])->name('analyses.show');
+    Route::get('/image', fn () => Inertia::render('Dashboard'))->name('image.upload');
+    Route::post('/analyze', [AnalysisController::class, 'store'])->name('image-analyses.store');
+    Route::get('/image-analyses', [AnalysisController::class, 'index'])->name('image-analyses.index');
+    Route::get('/image-analyses/{analysis}', [AnalysisController::class, 'show'])->name('image-analyses.show');
 
     Route::get('/text',fn () => Inertia::render('Text/Upload'))->name('text.upload');
     Route::post('/analyze/text', [TextAnalysisController::class, 'store'])->name('text-analyses.store');

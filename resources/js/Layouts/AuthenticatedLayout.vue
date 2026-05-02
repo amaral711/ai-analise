@@ -10,34 +10,28 @@ const { isDark, toggle } = useTheme();
 
 const navItems = [
     {
-        label: 'Análise de Imagem',
+        label: 'Início',
         routeName: 'dashboard',
-        icon: 'M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z',
+        activeRoutes: ['dashboard'],
+        icon: 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
     },
     {
-        label: 'Histórico de Imagens',
-        routeName: 'analyses.index',
-        icon: 'M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z',
+        label: 'Análise de Imagem',
+        routeName: 'image.upload',
+        activeRoutes: ['image.upload', 'analyses.index', 'analyses.show'],
+        icon: 'M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z',
     },
     {
         label: 'Análise de Texto',
         routeName: 'text.upload',
+        activeRoutes: ['text.upload', 'text-analyses.index', 'text-analyses.show'],
         icon: 'M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z',
-    },
-    {
-        label: 'Histórico de Textos',
-        routeName: 'text-analyses.index',
-        icon: 'M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z',
     },
     {
         label: 'Análise de Áudio',
         routeName: 'audio.upload',
+        activeRoutes: ['audio.upload', 'audio-analyses.index', 'audio-analyses.show'],
         icon: 'M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z',
-    },
-    {
-        label: 'Histórico de Áudios',
-        routeName: 'audio-analyses.index',
-        icon: 'M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z',
     },
 ];
 </script>
@@ -79,7 +73,7 @@ const navItems = [
                     :key="item.routeName"
                     :href="route(item.routeName)"
                     class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150"
-                    :class="route().current(item.routeName)
+                    :class="item.activeRoutes.some(r => route().current(r))
                         ? 'bg-violet-50 dark:bg-violet-600/15 text-violet-700 dark:text-violet-400 ring-1 ring-violet-200 dark:ring-violet-500/20'
                         : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800'"
                     @click="showMobileSidebar = false"

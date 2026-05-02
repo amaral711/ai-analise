@@ -59,7 +59,7 @@ const strokeDashoffset = computed(() => CIRCUMFERENCE * (1 - props.analysis.ai_s
                 </div>
                 <div class="flex items-center gap-2">
                     <Link
-                        :href="route('analyses.index')"
+                        :href="route('image-analyses.index')"
                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors border border-zinc-700"
                     >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">

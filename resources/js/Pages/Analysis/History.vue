@@ -128,7 +128,7 @@ function truncate(text, len = 90) {
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap text-right">
                                     <Link
-                                        :href="route('analyses.show', item.id)"
+                                        :href="route('image-analyses.show', item.id)"
                                         class="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 hover:text-violet-400 group-hover:text-zinc-300 transition-colors"
                                     >
                                         Ver
