@@ -38,7 +38,7 @@ class AnalysisController extends Controller
             'explanation'    => $result['explanation'],
         ]);
 
-        return redirect()->route('analyses.show', $analysis);
+        return redirect()->route('image-analyses.show', $analysis);
     }
 
     public function show(Analysis $analysis): Response
