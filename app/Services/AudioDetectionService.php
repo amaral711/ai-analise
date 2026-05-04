@@ -75,7 +75,7 @@ class AudioDetectionService
             $explanation[] = 'Nenhuma marca identificável de síntese por IA';
         }
 
-        $model = $data['model'] ?? 'desconhecido';
+        $model = $data['model'] ?? 'MelodyMachine/Deepfake-audio-detection-V2';
         $explanation[] = "Modelo utilizado: {$model}";
 
         return [
