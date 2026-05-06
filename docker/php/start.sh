@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd /var/www/html
+cd /var/www
 
 echo "→ Caching config/routes/views..."
 php artisan config:cache
