@@ -21,13 +21,13 @@ const submit = () => {
         <Head title="Criar conta" />
 
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Criar conta</h2>
-            <p class="text-zinc-500 dark:text-zinc-400 text-sm mt-1">Comece a detectar conteúdo gerado por IA agora mesmo</p>
+            <h2 class="text-2xl font-bold text-foreground">Criar conta</h2>
+            <p class="text-muted-foreground text-sm mt-1">Comece a detectar conteúdo gerado por IA agora mesmo</p>
         </div>
 
         <form @submit.prevent="submit" class="space-y-4">
             <div>
-                <label for="name" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Nome</label>
+                <label for="name" class="block text-sm font-medium text-foreground mb-1.5">Nome</label>
                 <input
                     id="name"
                     v-model="form.name"
@@ -36,15 +36,15 @@ const submit = () => {
                     autofocus
                     autocomplete="name"
                     placeholder="Seu nome completo"
-                    class="w-full px-3.5 py-2.5 rounded-lg bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-600 text-sm
-                           focus:border-violet-500 focus:ring-1 focus:ring-violet-500 focus:outline-none transition-colors"
+                    class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
+                           focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
                     :class="{ 'border-red-400 dark:border-red-500': form.errors.name }"
                 />
                 <p v-if="form.errors.name" class="mt-1.5 text-xs text-red-500 dark:text-red-400">{{ form.errors.name }}</p>
             </div>
 
             <div>
-                <label for="email" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">E-mail</label>
+                <label for="email" class="block text-sm font-medium text-foreground mb-1.5">E-mail</label>
                 <input
                     id="email"
                     v-model="form.email"
@@ -52,15 +52,15 @@ const submit = () => {
                     required
                     autocomplete="username"
                     placeholder="seu@email.com"
-                    class="w-full px-3.5 py-2.5 rounded-lg bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-600 text-sm
-                           focus:border-violet-500 focus:ring-1 focus:ring-violet-500 focus:outline-none transition-colors"
+                    class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
+                           focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
                     :class="{ 'border-red-400 dark:border-red-500': form.errors.email }"
                 />
                 <p v-if="form.errors.email" class="mt-1.5 text-xs text-red-500 dark:text-red-400">{{ form.errors.email }}</p>
             </div>
 
             <div>
-                <label for="password" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Senha</label>
+                <label for="password" class="block text-sm font-medium text-foreground mb-1.5">Senha</label>
                 <input
                     id="password"
                     v-model="form.password"
@@ -68,15 +68,15 @@ const submit = () => {
                     required
                     autocomplete="new-password"
                     placeholder="Mínimo 8 caracteres"
-                    class="w-full px-3.5 py-2.5 rounded-lg bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-600 text-sm
-                           focus:border-violet-500 focus:ring-1 focus:ring-violet-500 focus:outline-none transition-colors"
+                    class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
+                           focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
                     :class="{ 'border-red-400 dark:border-red-500': form.errors.password }"
                 />
                 <p v-if="form.errors.password" class="mt-1.5 text-xs text-red-500 dark:text-red-400">{{ form.errors.password }}</p>
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">Confirmar senha</label>
+                <label for="password_confirmation" class="block text-sm font-medium text-foreground mb-1.5">Confirmar senha</label>
                 <input
                     id="password_confirmation"
                     v-model="form.password_confirmation"
@@ -84,8 +84,8 @@ const submit = () => {
                     required
                     autocomplete="new-password"
                     placeholder="Repita a senha"
-                    class="w-full px-3.5 py-2.5 rounded-lg bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-600 text-sm
-                           focus:border-violet-500 focus:ring-1 focus:ring-violet-500 focus:outline-none transition-colors"
+                    class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
+                           focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
                     :class="{ 'border-red-400 dark:border-red-500': form.errors.password_confirmation }"
                 />
                 <p v-if="form.errors.password_confirmation" class="mt-1.5 text-xs text-red-500 dark:text-red-400">{{ form.errors.password_confirmation }}</p>
@@ -94,8 +94,8 @@ const submit = () => {
             <button
                 type="submit"
                 :disabled="form.processing"
-                class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm text-white
-                       bg-violet-600 hover:bg-violet-500 active:bg-violet-700 transition-colors
+                class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm text-primary-foreground
+                       bg-primary hover:bg-primary/90 active:bg-primary/80 transition-colors
                        disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
                 <svg v-if="form.processing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -107,15 +107,15 @@ const submit = () => {
         </form>
 
         <div class="mt-6 flex items-center gap-3">
-            <span class="flex-1 h-px bg-slate-200 dark:bg-zinc-700"></span>
-            <span class="text-xs text-zinc-400 dark:text-zinc-500">ou continue com</span>
-            <span class="flex-1 h-px bg-slate-200 dark:bg-zinc-700"></span>
+            <span class="flex-1 h-px bg-border"></span>
+            <span class="text-xs text-muted-foreground">ou continue com</span>
+            <span class="flex-1 h-px bg-border"></span>
         </div>
 
         <a
             :href="route('auth.google')"
-            class="mt-4 w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-lg border border-slate-300 dark:border-zinc-700
-                   bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-sm font-medium transition-colors"
+            class="mt-4 w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-lg border border-input
+                   bg-card hover:bg-accent text-foreground text-sm font-medium transition-colors"
         >
             <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -126,9 +126,9 @@ const submit = () => {
             Registrar com Google
         </a>
 
-        <p class="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-500">
+        <p class="mt-6 text-center text-sm text-muted-foreground">
             Já tem uma conta?
-            <Link :href="route('login')" class="text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 font-medium transition-colors">
+            <Link :href="route('login')" class="text-primary hover:text-primary font-medium transition-colors">
                 Entrar
             </Link>
         </p>

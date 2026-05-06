@@ -37,12 +37,12 @@ const navItems = [
 </script>
 
 <template>
-    <div class="flex h-screen overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 relative">
+    <div class="flex h-screen overflow-hidden bg-background relative">
 
         <!-- Background orbs -->
-        <div class="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full bg-violet-500/5 dark:bg-violet-600/10 blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-violet-400/5 dark:bg-violet-800/10 blur-3xl pointer-events-none"></div>
-        <div class="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-indigo-400/3 dark:bg-indigo-700/5 blur-3xl pointer-events-none"></div>
+        <div class="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/3 blur-3xl pointer-events-none"></div>
 
         <!-- Mobile overlay -->
         <div
@@ -53,16 +53,16 @@ const navItems = [
 
         <!-- Sidebar -->
         <aside
-            class="fixed inset-y-0 left-0 z-50 w-64 flex-shrink-0 flex flex-col bg-white dark:bg-zinc-900 border-r border-slate-200 dark:border-zinc-800 transition-transform duration-200
+            class="fixed inset-y-0 left-0 z-50 w-64 flex-shrink-0 flex flex-col bg-background border-r border-border transition-transform duration-200
                    lg:static lg:translate-x-0 lg:z-auto lg:h-full"
             :class="showMobileSidebar ? 'translate-x-0' : '-translate-x-full'"
         >
             <!-- Logo -->
-            <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 dark:border-zinc-800">
+            <div class="flex items-center gap-3 px-5 py-4 border-b border-border">
                 <img src="/logo.jpeg" alt="DeepScan" class="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
                 <div>
-                    <span class="text-zinc-900 dark:text-white font-semibold text-sm tracking-tight">DeepScan</span>
-                    <p class="text-zinc-500 text-[10px] leading-none mt-0.5">Detector de conteúdo IA</p>
+                    <span class="text-foreground font-semibold text-sm tracking-tight">DeepScan</span>
+                    <p class="text-muted-foreground text-[10px] leading-none mt-0.5">Detector de conteúdo IA</p>
                 </div>
             </div>
 
@@ -74,8 +74,8 @@ const navItems = [
                     :href="route(item.routeName)"
                     class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150"
                     :class="item.activeRoutes.some(r => route().current(r))
-                        ? 'bg-violet-50 dark:bg-violet-600/15 text-violet-700 dark:text-violet-400 ring-1 ring-violet-200 dark:ring-violet-500/20'
-                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800'"
+                        ? 'bg-primary/10 text-primary ring-1 ring-primary/20'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'"
                     @click="showMobileSidebar = false"
                 >
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
@@ -86,22 +86,22 @@ const navItems = [
             </nav>
 
             <!-- User -->
-            <div class="border-t border-slate-200 dark:border-zinc-800 p-4 space-y-3">
+            <div class="border-t border-border p-4 space-y-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-violet-100 dark:bg-violet-500/20 flex items-center justify-center flex-shrink-0 ring-1 ring-violet-300 dark:ring-violet-500/30 overflow-hidden">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 ring-1 ring-primary/30 overflow-hidden">
                         <img v-if="user.avatar" :src="user.avatar" :alt="user.name" class="w-full h-full object-cover" />
-                        <span v-else class="text-violet-700 dark:text-violet-300 text-xs font-bold uppercase">{{ user.name[0] }}</span>
+                        <span v-else class="text-primary text-xs font-bold uppercase">{{ user.name[0] }}</span>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-zinc-800 dark:text-zinc-200 text-sm font-medium truncate leading-tight">{{ user.name }}</p>
-                        <p class="text-zinc-500 text-xs truncate leading-tight">{{ user.email }}</p>
+                        <p class="text-foreground text-sm font-medium truncate leading-tight">{{ user.name }}</p>
+                        <p class="text-muted-foreground text-xs truncate leading-tight">{{ user.email }}</p>
                     </div>
                 </div>
                 <Link
                     :href="route('logout')"
                     method="post"
                     as="button"
-                    class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
+                    class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
@@ -115,12 +115,12 @@ const navItems = [
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
 
             <!-- Topbar (all screen sizes) -->
-            <div class="flex items-center gap-4 px-4 py-3 border-b border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm">
+            <div class="flex items-center gap-4 px-4 py-3 border-b border-border bg-background/80 backdrop-blur-sm">
 
                 <!-- Mobile: hamburger -->
                 <button
                     @click="showMobileSidebar = true"
-                    class="lg:hidden p-1.5 rounded-md text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
+                    class="lg:hidden p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -130,7 +130,7 @@ const navItems = [
                 <!-- Mobile: logo -->
                 <div class="lg:hidden flex items-center gap-2">
                     <img src="/logo.jpeg" alt="DeepScan" class="w-6 h-6 rounded-md object-cover" />
-                    <span class="text-zinc-900 dark:text-white font-semibold text-sm">DeepScan</span>
+                    <span class="text-foreground font-semibold text-sm">DeepScan</span>
                 </div>
 
                 <!-- Spacer -->
@@ -139,7 +139,7 @@ const navItems = [
                 <!-- Theme toggle (always visible, icon only) -->
                 <button
                     @click="toggle"
-                    class="p-2 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
+                    class="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                     :title="isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'"
                 >
                     <!-- Sol: aparece no modo escuro para indicar "ir para claro" -->
@@ -154,7 +154,7 @@ const navItems = [
             </div>
 
             <!-- Page header -->
-            <header v-if="$slots.header" data-layout-header class="px-6 lg:px-10 py-5 border-b border-slate-200/80 dark:border-zinc-800">
+            <header v-if="$slots.header" data-layout-header class="px-6 lg:px-10 py-5 border-b border-border">
                 <slot name="header" />
             </header>
 

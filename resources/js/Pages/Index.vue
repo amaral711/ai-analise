@@ -33,20 +33,20 @@ const tools = [
 
 const colorMap = {
     violet: {
-        icon: 'bg-violet-100 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400',
-        hover: 'hover:border-violet-300 dark:hover:border-violet-500/40 hover:shadow-violet-100 dark:hover:shadow-violet-900/20',
-        badge: 'bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-500/20',
-        arrow: 'text-violet-500 dark:text-violet-400',
+        icon: 'bg-primary/10 text-primary',
+        hover: 'hover:border-primary/30 ',
+        badge: 'bg-primary/5 text-primary border-primary/20 ',
+        arrow: 'text-primary',
     },
     blue: {
         icon: 'bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400',
-        hover: 'hover:border-blue-300 dark:hover:border-blue-500/40 hover:shadow-blue-100 dark:hover:shadow-blue-900/20',
+        hover: 'hover:border-blue-300 dark:hover:border-blue-500/40 ',
         badge: 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20',
         arrow: 'text-blue-500 dark:text-blue-400',
     },
     emerald: {
         icon: 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-        hover: 'hover:border-emerald-300 dark:hover:border-emerald-500/40 hover:shadow-emerald-100 dark:hover:shadow-emerald-900/20',
+        hover: 'hover:border-emerald-300 dark:hover:border-emerald-500/40 ',
         badge: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20',
         arrow: 'text-emerald-500 dark:text-emerald-400',
     },
@@ -59,8 +59,8 @@ const colorMap = {
     <AuthenticatedLayout>
         <template #header>
             <div>
-                <h1 class="text-zinc-100 text-base font-semibold">Olá, {{ user.name.split(' ')[0] }}</h1>
-                <p class="text-zinc-500 text-sm mt-0.5">Escolha um tipo de análise para começar</p>
+                <h1 class="text-foreground text-base font-semibold">Olá, {{ user.name.split(' ')[0] }}</h1>
+                <p class="text-muted-foreground text-sm mt-0.5">Escolha um tipo de análise para começar</p>
             </div>
         </template>
 
@@ -73,7 +73,7 @@ const colorMap = {
                         v-for="tool in tools"
                         :key="tool.routeName"
                         :href="route(tool.routeName)"
-                        class="group flex flex-col p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-sm transition-all duration-200 hover:shadow-md"
+                        class="group flex flex-col p-6 rounded-2xl bg-card border border-border shadow-sm transition-all duration-200 hover:shadow-md"
                         :class="colorMap[tool.color].hover"
                     >
                         <!-- Icon -->
@@ -85,8 +85,8 @@ const colorMap = {
                         </div>
 
                         <!-- Content -->
-                        <h3 class="text-zinc-900 dark:text-zinc-100 font-semibold text-sm mb-2">{{ tool.label }}</h3>
-                        <p class="text-zinc-500 dark:text-zinc-400 text-xs leading-relaxed flex-1">{{ tool.description }}</p>
+                        <h3 class="text-foreground font-semibold text-sm mb-2">{{ tool.label }}</h3>
+                        <p class="text-muted-foreground text-xs leading-relaxed flex-1">{{ tool.description }}</p>
 
                         <!-- Footer -->
                         <div class="mt-5 flex items-center justify-between">
@@ -106,21 +106,21 @@ const colorMap = {
                 <!-- Históricos rápidos -->
                 <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a :href="route('image-analyses.index')"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-violet-600 dark:hover:text-violet-400 hover:border-violet-200 dark:hover:border-violet-500/30 transition-all text-sm">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-all text-sm">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                         Histórico de imagens
                     </a>
                     <a :href="route('text-analyses.index')"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-500/30 transition-all text-sm">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-500/30 transition-all text-sm">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                         Histórico de textos
                     </a>
                     <a :href="route('audio-analyses.index')"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-200 dark:hover:border-emerald-500/30 transition-all text-sm">
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-200 dark:hover:border-emerald-500/30 transition-all text-sm">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>

@@ -17,7 +17,7 @@ const models = [
         label: 'BERT Português',
         desc:  'Análise de perplexidade por sentença — mais preciso',
         badge: 'Alta precisão',
-        badgeClass: 'text-violet-400',
+        badgeClass: 'text-primary',
     },
 ];
 
@@ -45,10 +45,10 @@ function submit() {
         <template #header>
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-zinc-100 text-base font-semibold">Análise de Texto</h1>
-                    <p class="text-zinc-500 text-sm mt-0.5">Detecte se um texto foi gerado por inteligência artificial</p>
+                    <h1 class="text-foreground text-base font-semibold">Análise de Texto</h1>
+                    <p class="text-muted-foreground text-sm mt-0.5">Detecte se um texto foi gerado por inteligência artificial</p>
                 </div>
-                <a :href="route('text-analyses.index')" class="text-sm text-zinc-500 hover:text-violet-400 transition-colors flex items-center gap-1.5">
+                <a :href="route('text-analyses.index')" class="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
@@ -62,22 +62,22 @@ function submit() {
 
                 <!-- Info pills -->
                 <div class="flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 text-xs">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground text-xs">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                         Análise síncrona
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 text-xs">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground text-xs">
                         <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                         Modelos treinados em PT-BR
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 text-xs">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground text-xs">
                         <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
                         100 – 5.000 caracteres
                     </span>
                 </div>
 
                 <!-- Card -->
-                <div class="rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
+                <div class="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
                     <form @submit.prevent="submit">
 
                         <!-- Textarea -->
@@ -86,8 +86,8 @@ function submit() {
                             rows="10"
                             maxlength="5000"
                             placeholder="Cole aqui o texto que deseja analisar..."
-                            class="w-full bg-transparent border-0 text-zinc-800 dark:text-zinc-200 text-sm
-                                   placeholder-slate-400 dark:placeholder-zinc-500
+                            class="w-full bg-transparent border-0 text-foreground text-sm
+                                   placeholder:text-muted-foreground
                                    focus:outline-none focus:ring-0
                                    resize-none p-5"
                         ></textarea>
@@ -96,26 +96,26 @@ function submit() {
                         <div v-if="dropdownOpen" class="fixed inset-0 z-0" @click="dropdownOpen = false" />
 
                         <!-- Toolbar -->
-                        <div class="flex items-center justify-between gap-3 px-4 py-3 border-t border-slate-200 dark:border-zinc-800">
+                        <div class="flex items-center justify-between gap-3 px-4 py-3 border-t border-border">
 
                             <!-- Model dropdown -->
                             <div class="relative">
-                                <p class="text-[10px] text-zinc-400 dark:text-zinc-600 mb-1 leading-none">Trocar modelo de análise</p>
+                                <p class="text-[10px] text-muted-foreground mb-1 leading-none">Trocar modelo de análise</p>
                                 <button
                                     type="button"
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all
-                                           bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700/80
-                                           border border-slate-200 dark:border-zinc-700
-                                           text-zinc-700 dark:text-zinc-300"
+                                           bg-secondary hover:bg-accent
+                                           border border-border
+                                           text-foreground"
                                 >
-                                    <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                    <svg class="w-3.5 h-3.5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
                                     </svg>
                                     {{ selectedModel.label }}
                                     <span class="text-[10px] font-semibold" :class="selectedModel.badgeClass">{{ selectedModel.badge }}</span>
                                     <svg
-                                        class="w-3.5 h-3.5 text-zinc-400 transition-transform"
+                                        class="w-3.5 h-3.5 text-muted-foreground transition-transform"
                                         :class="dropdownOpen ? 'rotate-180' : ''"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"
                                     >
@@ -134,11 +134,11 @@ function submit() {
                                 >
                                     <div
                                         v-if="dropdownOpen"
-                                        class="absolute bottom-full left-0 mb-2 w-64 rounded-xl border border-slate-200 dark:border-zinc-700
-                                               bg-white dark:bg-zinc-800 shadow-lg shadow-black/10 dark:shadow-black/40 z-10 overflow-hidden"
+                                        class="absolute bottom-full left-0 mb-2 w-64 rounded-xl border border-border
+                                               bg-card shadow-lg shadow-black/10 dark:shadow-black/40 z-10 overflow-hidden"
                                     >
                                         <div class="px-3 pt-3 pb-1">
-                                            <p class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Modelo de análise</p>
+                                            <p class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Modelo de análise</p>
                                         </div>
                                         <div class="p-1.5">
                                             <button
@@ -148,8 +148,8 @@ function submit() {
                                                 @click="selectModel(m.id)"
                                                 class="w-full flex items-start gap-3 px-3 py-2.5 rounded-lg text-left transition-colors group"
                                                 :class="form.model === m.id
-                                                    ? 'bg-violet-500/10 dark:bg-violet-500/10'
-                                                    : 'hover:bg-slate-100 dark:hover:bg-zinc-700/60'"
+                                                    ? 'bg-primary/10'
+                                                    : 'hover:bg-accent'"
                                             >
                                                 <!-- Check -->
                                                 <span class="mt-0.5 w-4 h-4 shrink-0 flex items-center justify-center">
@@ -159,10 +159,10 @@ function submit() {
                                                 </span>
                                                 <div class="flex-1 min-w-0">
                                                     <div class="flex items-center gap-2">
-                                                        <span class="text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ m.label }}</span>
+                                                        <span class="text-sm font-medium text-foreground ">{{ m.label }}</span>
                                                         <span class="text-[10px] font-semibold" :class="m.badgeClass">{{ m.badge }}</span>
                                                     </div>
-                                                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">{{ m.desc }}</p>
+                                                    <p class="text-xs text-muted-foreground mt-0.5 leading-relaxed">{{ m.desc }}</p>
                                                 </div>
                                             </button>
                                         </div>
@@ -176,7 +176,7 @@ function submit() {
                                     class="text-xs transition-colors hidden sm:block tabular-nums"
                                     :class="charCount < 100
                                         ? 'text-amber-500'
-                                        : 'text-zinc-400 dark:text-zinc-600'"
+                                        : 'text-muted-foreground'"
                                 >
                                     <template v-if="charCount < 100">{{ 100 - charCount }} para o mínimo</template>
                                     <template v-else>{{ charCount.toLocaleString('pt-BR') }} / 5.000</template>
@@ -186,7 +186,7 @@ function submit() {
                                     type="submit"
                                     :disabled="form.processing || !isValid"
                                     class="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-medium transition-all
-                                           bg-violet-600 text-white hover:bg-violet-500 active:bg-violet-700
+                                           bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80
                                            disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <svg v-if="form.processing" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
