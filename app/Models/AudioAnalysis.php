@@ -16,6 +16,7 @@ class AudioAnalysis extends Model
         'ai_score',
         'classification',
         'explanation',
+        'status',
     ];
 
     protected $casts = [

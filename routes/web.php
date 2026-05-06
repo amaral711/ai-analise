@@ -4,6 +4,7 @@ use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\AudioAnalysisController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TextAnalysisController;
+use App\Http\Controllers\WaitingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,12 +18,15 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Index'))->name('dashboard');
 
+    Route::get('/waiting', [WaitingController::class, 'index'])->name('analyses.waiting');
+    Route::get('/analyses/pending', [WaitingController::class, 'pending'])->name('analyses.pending');
+
     Route::get('/image', fn () => Inertia::render('Dashboard'))->name('image.upload');
     Route::post('/analyze', [AnalysisController::class, 'store'])->name('image-analyses.store');
     Route::get('/image-analyses', [AnalysisController::class, 'index'])->name('image-analyses.index');
     Route::get('/image-analyses/{analysis}', [AnalysisController::class, 'show'])->name('image-analyses.show');
 
-    Route::get('/text',fn () => Inertia::render('Text/Upload'))->name('text.upload');
+    Route::get('/text', fn () => Inertia::render('Text/Upload'))->name('text.upload');
     Route::post('/analyze/text', [TextAnalysisController::class, 'store'])->name('text-analyses.store');
     Route::get('/text-analyses', [TextAnalysisController::class, 'index'])->name('text-analyses.index');
     Route::get('/text-analyses/{textAnalysis}', [TextAnalysisController::class, 'show'])->name('text-analyses.show');

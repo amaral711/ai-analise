@@ -17,14 +17,31 @@ class AiDetectionService
         $this->token = config('services.image_analysis.token');
     }
 
+    public function analyzeFromPath(string $localPath, string $originalName): array
+    {
+        Log::info('AI analysis start (from path)', ['url' => $this->url, 'file' => $originalName]);
+
+        $metadataObservations = $this->metadataAnalyzer->analyzeFromPath($localPath);
+
+        return $this->sendToApi(file_get_contents($localPath), $originalName, $metadataObservations);
+    }
+
     public function analyzeImage(UploadedFile $file): array
     {
         Log::info('AI analysis start', ['url' => $this->url, 'file' => $file->getClientOriginalName()]);
 
         $metadataObservations = $this->metadataAnalyzer->analyze($file);
 
+        return $this->sendToApi(
+            file_get_contents($file->path()),
+            $file->getClientOriginalName(),
+            $metadataObservations
+        );
+    }
+
+    private function sendToApi(string $contents, string $name, array $metadataObservations): array
+    {
         // HF Spaces gratuitos dormem após inatividade — cold start pode levar 90s
-        // Tentativa 1 com timeout curto; se falhar por timeout, tenta novamente com mais tempo
         $attempts = [60, 90];
 
         foreach ($attempts as $i => $timeout) {
@@ -36,7 +53,7 @@ class AiDetectionService
                 }
 
                 $response = $request
-                    ->attach('file', file_get_contents($file->path()), $file->getClientOriginalName())
+                    ->attach('file', $contents, $name)
                     ->post($this->url);
 
                 Log::info('AI response', ['status' => $response->status(), 'attempt' => $i + 1]);

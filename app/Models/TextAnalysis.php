@@ -16,6 +16,7 @@ class TextAnalysis extends Model
         'classification',
         'explanation',
         'model',
+        'status',
     ];
 
     protected $casts = [

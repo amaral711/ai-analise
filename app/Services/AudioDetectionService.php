@@ -17,10 +17,22 @@ class AudioDetectionService
         $this->token = config('services.audio_analysis.token');
     }
 
+    public function analyzeFromPath(string $localPath, string $originalName): array
+    {
+        Log::info('Audio AI analysis start (from path)', ['url' => $this->url, 'file' => $originalName]);
+
+        return $this->sendToApi(file_get_contents($localPath), $originalName);
+    }
+
     public function analyzeAudio(UploadedFile $file): array
     {
         Log::info('Audio AI analysis start', ['url' => $this->url, 'file' => $file->getClientOriginalName()]);
 
+        return $this->sendToApi(file_get_contents($file->path()), $file->getClientOriginalName());
+    }
+
+    private function sendToApi(string $contents, string $name): array
+    {
         try {
             $request = Http::timeout(60);
 
@@ -29,7 +41,7 @@ class AudioDetectionService
             }
 
             $response = $request
-                ->attach('file', file_get_contents($file->path()), $file->getClientOriginalName())
+                ->attach('file', $contents, $name)
                 ->post($this->url);
 
             Log::info('Audio AI response', ['status' => $response->status(), 'body' => $response->body()]);

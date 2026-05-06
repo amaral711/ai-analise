@@ -3,42 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AnalyzeAudioRequest;
+use App\Jobs\AnalyzeAudioJob;
 use App\Models\AudioAnalysis;
-use App\Services\AudioDetectionService;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AudioAnalysisController extends Controller
 {
-    public function __construct(private AudioDetectionService $service) {}
-
     public function store(AnalyzeAudioRequest $request)
     {
         $file = $request->file('audio');
 
-        try {
-            $result = $this->service->analyzeAudio($file);
-        } catch (\InvalidArgumentException $e) {
-            return back()->withErrors(['audio' => $e->getMessage()]);
-        } catch (\RuntimeException $e) {
-            return back()->withErrors(['audio' => $e->getMessage()]);
-        }
-
         $ext      = $file->getClientOriginalExtension();
-        $filename = 'audio/' . uniqid() . '.' . $ext;
-
-        Storage::disk('s3')->putFileAs('', $file, $filename, 'public');
+        $tempPath = 'pending/' . uniqid() . '.' . $ext;
+        Storage::disk('local')->put($tempPath, file_get_contents($file->path()));
 
         $analysis = $request->user()->audioAnalyses()->create([
-            'text'           => $file->getClientOriginalName(),
-            'audio_path'     => $filename,
-            'ai_score'       => $result['ai_score'],
-            'classification' => $result['classification'],
-            'explanation'    => $result['explanation'],
+            'text'   => $file->getClientOriginalName(),
+            'status' => 'pending',
         ]);
 
-        return redirect()->route('audio-analyses.show', $analysis);
+        AnalyzeAudioJob::dispatch($analysis, $tempPath, $file->getClientOriginalName());
+
+        return redirect()->route('analyses.waiting');
     }
 
     public function show(AudioAnalysis $audioAnalysis): Response

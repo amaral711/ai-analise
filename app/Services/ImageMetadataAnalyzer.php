@@ -24,43 +24,58 @@ class ImageMetadataAnalyzer
         [2560, 1440], [3840, 2160], [2560, 1600], [2880, 1800],
     ];
 
+    public function analyzeFromPath(string $localPath): array
+    {
+        $mime = mime_content_type($localPath) ?: '';
+        $exif = in_array($mime, ['image/jpeg', 'image/jpg'])
+            ? (@exif_read_data($localPath, null, true) ?: [])
+            : [];
+
+        $dimensions = @getimagesize($localPath) ?: null;
+        $size       = filesize($localPath);
+
+        return $this->buildObservations($mime, $exif, $dimensions, $size);
+    }
+
     public function analyze(UploadedFile $file): array
+    {
+        $mime       = $file->getMimeType();
+        $exif       = in_array($mime, ['image/jpeg', 'image/jpg'])
+            ? (@exif_read_data($file->path(), null, true) ?: [])
+            : [];
+        $dimensions = @getimagesize($file->path()) ?: null;
+        $size       = $file->getSize();
+
+        return $this->buildObservations($mime, $exif, $dimensions, $size);
+    }
+
+    private function buildObservations(string $mime, array $exif, ?array $dimensions, int $size): array
     {
         $observations = [];
 
-        $mime = $file->getMimeType();
-        $exif = in_array($mime, ['image/jpeg', 'image/jpg'])
-            ? (@exif_read_data($file->path(), null, true) ?: [])
-            : [];
-
-        $dimensions = @getimagesize($file->path()) ?: null;
-
-        if ($this->isWhatsAppCompressed($file, $exif, $dimensions)) {
+        if ($this->isWhatsAppCompressedRaw($size, $exif, $dimensions)) {
             $observations[] = 'Imagem parece ter sido comprimida e redimensionada pelo WhatsApp, o que pode reduzir a precisão da análise. Para resultados mais confiáveis, envie a imagem original.';
-        } elseif ($this->isScreenshot($file, $exif, $dimensions)) {
+        } elseif ($this->isScreenshotRaw($mime, $exif, $dimensions)) {
             $observations[] = 'Imagem parece ser um screenshot. Capturas de tela podem conter padrões visuais que confundem detectores de IA. Para melhor análise, envie a imagem original gerada.';
         }
 
         return $observations;
     }
 
-    private function isWhatsAppCompressed(UploadedFile $file, array $exif, ?array $dimensions): bool
+    private function isWhatsAppCompressedRaw(int $size, array $exif, ?array $dimensions): bool
     {
-        // Primary: Software tag explicitly set by WhatsApp
         $software = $exif['IFD0']['Software'] ?? '';
         if (stripos($software, 'WhatsApp') !== false) {
             return true;
         }
 
-        // Heuristic combination: stripped EXIF + WhatsApp dimension cap + small file
         return $this->hasStrippedExif($exif)
             && $this->isWithinWhatsAppDimensions($dimensions)
-            && $file->getSize() < self::WHATSAPP_MAX_SIZE_BYTES;
+            && $size < self::WHATSAPP_MAX_SIZE_BYTES;
     }
 
-    private function isScreenshot(UploadedFile $file, array $exif, ?array $dimensions): bool
+    private function isScreenshotRaw(string $mime, array $exif, ?array $dimensions): bool
     {
-        // Primary: Software tag matches known OS/screenshot keywords
         $software = strtolower($exif['IFD0']['Software'] ?? '');
         foreach (self::SCREENSHOT_SOFTWARE_KEYWORDS as $keyword) {
             if (str_contains($software, $keyword)) {
@@ -68,8 +83,7 @@ class ImageMetadataAnalyzer
             }
         }
 
-        // Heuristic: PNG (screenshots are rarely JPEG) + no camera metadata + matches known screen resolution
-        if ($file->getMimeType() === 'image/png' && $this->hasStrippedExif($exif)) {
+        if ($mime === 'image/png' && $this->hasStrippedExif($exif)) {
             return $this->matchesScreenResolution($dimensions);
         }
 

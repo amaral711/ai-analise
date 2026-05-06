@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { useTheme } from '@/composables/useTheme.js';
+import AnalysisProgressWidget from '@/Components/AnalysisProgressWidget.vue';
 
 const page = usePage();
 const user = page.props.auth.user;
@@ -163,5 +164,8 @@ const navItems = [
                 <slot />
             </main>
         </div>
+
+        <!-- Floating analysis progress widget -->
+        <AnalysisProgressWidget />
     </div>
 </template>

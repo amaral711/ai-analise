@@ -3,42 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AnalyzeImageRequest;
+use App\Jobs\AnalyzeImageJob;
 use App\Models\Analysis;
-use App\Services\AiDetectionService;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AnalysisController extends Controller
 {
-    public function __construct(private AiDetectionService $service) {}
-
     public function store(AnalyzeImageRequest $request)
     {
         $file = $request->file('image');
 
-        try {
-            $result = $this->service->analyzeImage($file);
-        } catch (\InvalidArgumentException $e) {
-            return back()->withErrors(['image' => $e->getMessage()]);
-        } catch (\RuntimeException $e) {
-            return back()->withErrors(['image' => $e->getMessage()]);
-        }
-
         $ext      = $file->getClientOriginalExtension();
-        $filename = uniqid() . '.' . $ext;
-
-        $imagePath = Storage::disk('s3')->putFileAs('', $file, $filename, 'public');
+        $tempPath = 'pending/' . uniqid() . '.' . $ext;
+        Storage::disk('local')->put($tempPath, file_get_contents($file->path()));
 
         $analysis = $request->user()->analyses()->create([
-            'text'           => $file->getClientOriginalName(),
-            'image_path'     => $imagePath,
-            'ai_score'       => $result['ai_score'],
-            'classification' => $result['classification'],
-            'explanation'    => $result['explanation'],
+            'text'   => $file->getClientOriginalName(),
+            'status' => 'pending',
         ]);
 
-        return redirect()->route('image-analyses.show', $analysis);
+        AnalyzeImageJob::dispatch($analysis, $tempPath, $file->getClientOriginalName());
+
+        return redirect()->route('analyses.waiting');
     }
 
     public function show(Analysis $analysis): Response

@@ -3,7 +3,8 @@ APP      = $(DC) exec app
 ARTISAN  = $(APP) php artisan
 
 .PHONY: help up down build restart install setup migrate fresh seed \
-        bash tinker npm dev test logs ps permissions ai-logs ai-bash
+        bash tinker npm dev test logs ps permissions ai-logs ai-bash \
+        worker reverb
 
 help:
 	@echo ""
@@ -23,6 +24,8 @@ help:
 	@echo "  make logs        Exibe logs dos containers"
 	@echo "  make ps          Lista containers"
 	@echo "  make permissions Corrige permissoes de storage"
+	@echo "  make worker      Logs do queue worker"
+	@echo "  make reverb      Logs do Reverb (WebSocket)"
 	@echo "  make ai-logs     Logs do servico Python (modelo HF)"
 	@echo "  make ai-bash     Shell no container Python"
 	@echo ""
@@ -103,6 +106,14 @@ ps:
 permissions:
 	$(APP) chmod -R 775 storage bootstrap/cache
 	$(APP) chown -R www-data:www-data storage bootstrap/cache
+
+## ─── Fila + WebSocket ────────────────────────────────────────────────────────
+
+worker:
+	$(DC) logs -f worker
+
+reverb:
+	$(DC) logs -f reverb
 
 ## ─── AI Service (Python/HuggingFace) ────────────────────────────────────────
 

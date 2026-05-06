@@ -16,6 +16,7 @@ class Analysis extends Model
         'ai_score',
         'classification',
         'explanation',
+        'status',
     ];
 
     protected $casts = [
