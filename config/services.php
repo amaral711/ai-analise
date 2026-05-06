@@ -44,6 +44,21 @@ return [
         'token' => env('HF_TOKEN'),
     ],
 
+    'image_analysis' => [
+        'url'   => env('IMAGE_ANALYSIS_URL', 'http://python-ai:8001/detect/image'),
+        'token' => env('HF_TOKEN'),
+    ],
+
+    'text_detecting_ai' => [
+        'url'   => env('TEXT_DETECTING_AI_URL', 'http://python-ai:8001/detect/text'),
+        'token' => env('HF_TOKEN'),
+    ],
+
+    'text_bert' => [
+        'url'   => env('TEXT_BERT_URL', 'http://python-ai:8001/detect/text'),
+        'token' => env('HF_TOKEN'),
+    ],
+
     'google' => [
         'client_id'     => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),

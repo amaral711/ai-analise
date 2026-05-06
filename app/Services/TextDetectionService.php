@@ -7,21 +7,24 @@ use Illuminate\Support\Facades\Log;
 
 class TextDetectionService
 {
-    private string $pythonUrl;
-
-    public function __construct()
-    {
-        $this->pythonUrl = rtrim(config('services.python_ai.url', 'http://python-ai:8001'), '/');
-    }
-
     public function analyzeText(string $text, string $model = 'detecting_ai'): array
     {
-        Log::info('Text AI analysis start', ['url' => $this->pythonUrl, 'model' => $model, 'length' => strlen($text)]);
+        $isProduction = app()->environment('production');
+
+        [$url, $token, $body] = $isProduction
+            ? $this->productionConfig($model, $text)
+            : $this->localConfig($model, $text);
+
+        Log::info('Text AI analysis start', ['url' => $url, 'model' => $model, 'length' => strlen($text)]);
 
         try {
-            $response = Http::timeout(60)
-                ->acceptJson()
-                ->post($this->pythonUrl . '/detect/text', ['text' => $text, 'model' => $model]);
+            $request = Http::timeout(60)->acceptJson();
+
+            if ($token) {
+                $request = $request->withToken($token);
+            }
+
+            $response = $request->post($url, $body);
 
             Log::info('Text AI response', ['status' => $response->status(), 'body' => $response->body()]);
 
@@ -33,19 +36,35 @@ class TextDetectionService
                 throw new \InvalidArgumentException($response->json('detail') ?? 'Erro ao analisar texto.');
             }
 
-            Log::warning('Python AI text service error', ['status' => $response->status()]);
+            Log::warning('Text AI service error', ['status' => $response->status()]);
         } catch (\InvalidArgumentException $e) {
             throw $e;
         } catch (\Exception $e) {
-            Log::warning('Python AI text service unavailable', ['error' => $e->getMessage()]);
+            Log::warning('Text AI service unavailable', ['error' => $e->getMessage()]);
         }
 
         throw new \RuntimeException('Serviço de análise indisponível. Tente novamente.');
     }
 
+    private function productionConfig(string $model, string $text): array
+    {
+        $key   = $model === 'bert' ? 'text_bert' : 'text_detecting_ai';
+        $url   = config("services.{$key}.url");
+        $token = config("services.{$key}.token");
+
+        return [$url, $token, ['text' => $text]];
+    }
+
+    private function localConfig(string $model, string $text): array
+    {
+        $url = rtrim(config('services.python_ai.url', 'http://python-ai:8001'), '/') . '/detect/text';
+
+        return [$url, null, ['text' => $text, 'model' => $model]];
+    }
+
     private function buildResult(array $data, string $model): array
     {
-        $aiScore  = round((float) ($data['ai_score'] ?? 0.5), 2);
+        $aiScore   = round((float) ($data['ai_score'] ?? 0.5), 2);
         $confianca = $data['confianca'] ?? 'media';
 
         $classification = match (true) {
@@ -83,7 +102,7 @@ class TextDetectionService
             ];
         }
 
-        $avgPerp   = isset($data['avg_perplexity']) ? round($data['avg_perplexity'], 1) : '?';
+        $avgPerp    = isset($data['avg_perplexity']) ? round($data['avg_perplexity'], 1) : '?';
         $burstiness = isset($data['burstiness']) ? round($data['burstiness'], 1) : '?';
 
         $lines = [

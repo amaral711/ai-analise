@@ -8,23 +8,31 @@ use Illuminate\Support\Facades\Log;
 
 class AiDetectionService
 {
-    private string $pythonUrl;
+    private string $url;
+    private ?string $token;
 
     public function __construct(private ImageMetadataAnalyzer $metadataAnalyzer)
     {
-        $this->pythonUrl = rtrim(config('services.python_ai.url', 'http://python-ai:8001'), '/');
+        $this->url   = config('services.image_analysis.url');
+        $this->token = config('services.image_analysis.token');
     }
 
     public function analyzeImage(UploadedFile $file): array
     {
-        Log::info('AI analysis start', ['url' => $this->pythonUrl, 'file' => $file->getClientOriginalName()]);
+        Log::info('AI analysis start', ['url' => $this->url, 'file' => $file->getClientOriginalName()]);
 
         $metadataObservations = $this->metadataAnalyzer->analyze($file);
 
         try {
-            $response = Http::timeout(60)
+            $request = Http::timeout(60);
+
+            if ($this->token) {
+                $request = $request->withToken($this->token);
+            }
+
+            $response = $request
                 ->attach('file', file_get_contents($file->path()), $file->getClientOriginalName())
-                ->post($this->pythonUrl . '/detect/image');
+                ->post($this->url);
 
             Log::info('AI response', ['status' => $response->status(), 'body' => $response->body()]);
 
@@ -36,11 +44,11 @@ class AiDetectionService
                 throw new \InvalidArgumentException($response->json('detail') ?? 'Erro ao analisar imagem.');
             }
 
-            Log::warning('Python AI service error', ['status' => $response->status()]);
+            Log::warning('Image AI service error', ['status' => $response->status()]);
         } catch (\InvalidArgumentException $e) {
             throw $e;
         } catch (\Exception $e) {
-            Log::warning('Python AI service unavailable', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::warning('Image AI service unavailable', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
 
         throw new \RuntimeException('Serviço de análise indisponível. Tente novamente.');
