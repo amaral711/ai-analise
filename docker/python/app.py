@@ -36,6 +36,12 @@ def get_text_classifier():
 app = FastAPI()
 
 
+@app.on_event("startup")
+def preload_models():
+    get_image_classifier()
+    get_text_classifier()
+
+
 # ─── Image helpers ────────────────────────────────────────────────────────────
 
 def is_ai_label(label: str) -> bool:
