@@ -23,32 +23,43 @@ class AiDetectionService
 
         $metadataObservations = $this->metadataAnalyzer->analyze($file);
 
-        try {
-            $request = Http::timeout(60);
+        // HF Spaces gratuitos dormem após inatividade — cold start pode levar 90s
+        // Tentativa 1 com timeout curto; se falhar por timeout, tenta novamente com mais tempo
+        $attempts = [60, 90];
 
-            if ($this->token) {
-                $request = $request->withToken($this->token);
+        foreach ($attempts as $i => $timeout) {
+            try {
+                $request = Http::timeout($timeout);
+
+                if ($this->token) {
+                    $request = $request->withToken($this->token);
+                }
+
+                $response = $request
+                    ->attach('file', file_get_contents($file->path()), $file->getClientOriginalName())
+                    ->post($this->url);
+
+                Log::info('AI response', ['status' => $response->status(), 'attempt' => $i + 1]);
+
+                if ($response->successful()) {
+                    return $this->buildResult($response->json(), $metadataObservations);
+                }
+
+                if ($response->status() === 400 || $response->status() === 422) {
+                    throw new \InvalidArgumentException($response->json('detail') ?? 'Erro ao analisar imagem.');
+                }
+
+                Log::warning('Image AI service error', ['status' => $response->status()]);
+                break;
+            } catch (\InvalidArgumentException $e) {
+                throw $e;
+            } catch (\Exception $e) {
+                Log::warning('Image AI attempt failed', ['attempt' => $i + 1, 'error' => $e->getMessage()]);
+
+                if ($i === array_key_last($attempts)) {
+                    break;
+                }
             }
-
-            $response = $request
-                ->attach('file', file_get_contents($file->path()), $file->getClientOriginalName())
-                ->post($this->url);
-
-            Log::info('AI response', ['status' => $response->status(), 'body' => $response->body()]);
-
-            if ($response->successful()) {
-                return $this->buildResult($response->json(), $metadataObservations);
-            }
-
-            if ($response->status() === 400 || $response->status() === 422) {
-                throw new \InvalidArgumentException($response->json('detail') ?? 'Erro ao analisar imagem.');
-            }
-
-            Log::warning('Image AI service error', ['status' => $response->status()]);
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            Log::warning('Image AI service unavailable', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
 
         throw new \RuntimeException('Serviço de análise indisponível. Tente novamente.');

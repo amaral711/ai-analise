@@ -17,30 +17,40 @@ class TextDetectionService
 
         Log::info('Text AI analysis start', ['url' => $url, 'model' => $model, 'length' => strlen($text)]);
 
-        try {
-            $request = Http::timeout(60)->acceptJson();
+        // HF Spaces gratuitos dormem após inatividade — cold start pode levar 90s
+        $attempts = [60, 90];
 
-            if ($token) {
-                $request = $request->withToken($token);
+        foreach ($attempts as $i => $timeout) {
+            try {
+                $request = Http::timeout($timeout)->acceptJson();
+
+                if ($token) {
+                    $request = $request->withToken($token);
+                }
+
+                $response = $request->post($url, $body);
+
+                Log::info('Text AI response', ['status' => $response->status(), 'attempt' => $i + 1]);
+
+                if ($response->successful()) {
+                    return $this->buildResult($response->json(), $model);
+                }
+
+                if ($response->status() === 400 || $response->status() === 422) {
+                    throw new \InvalidArgumentException($response->json('detail') ?? 'Erro ao analisar texto.');
+                }
+
+                Log::warning('Text AI service error', ['status' => $response->status()]);
+                break;
+            } catch (\InvalidArgumentException $e) {
+                throw $e;
+            } catch (\Exception $e) {
+                Log::warning('Text AI attempt failed', ['attempt' => $i + 1, 'error' => $e->getMessage()]);
+
+                if ($i === array_key_last($attempts)) {
+                    break;
+                }
             }
-
-            $response = $request->post($url, $body);
-
-            Log::info('Text AI response', ['status' => $response->status(), 'body' => $response->body()]);
-
-            if ($response->successful()) {
-                return $this->buildResult($response->json(), $model);
-            }
-
-            if ($response->status() === 400 || $response->status() === 422) {
-                throw new \InvalidArgumentException($response->json('detail') ?? 'Erro ao analisar texto.');
-            }
-
-            Log::warning('Text AI service error', ['status' => $response->status()]);
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            Log::warning('Text AI service unavailable', ['error' => $e->getMessage()]);
         }
 
         throw new \RuntimeException('Serviço de análise indisponível. Tente novamente.');
