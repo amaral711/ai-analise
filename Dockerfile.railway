@@ -56,11 +56,9 @@ RUN composer install --optimize-autoloader --no-dev --no-interaction
 COPY --from=frontend /app/public/build ./public/build
 
 # Configurações do Nginx e Supervisor
+RUN rm -rf /etc/nginx/sites-enabled/* /etc/nginx/conf.d/*
 COPY docker/nginx/railway.conf /etc/nginx/conf.d/default.conf
 COPY docker/supervisor/railway.conf /etc/supervisor/conf.d/railway.conf
-
-# Remove config padrão do Nginx
-RUN rm -f /etc/nginx/sites-enabled/default
 
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
