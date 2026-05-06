@@ -15,4 +15,4 @@ echo "→ Linking storage..."
 php artisan storage:link --force
 
 echo "→ Starting services..."
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/railway.conf
