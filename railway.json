@@ -10,17 +10,6 @@
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 3
       }
-    },
-    "python-ai": {
-      "build": {
-        "dockerfilePath": "docker/python/Dockerfile",
-        "buildContext": "."
-      },
-      "deploy": {
-        "healthcheckPath": "/health",
-        "restartPolicyType": "ON_FAILURE",
-        "restartPolicyMaxRetries": 3
-      }
     }
   }
 }
