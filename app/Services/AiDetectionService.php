@@ -48,7 +48,7 @@ class AiDetectionService
 
     private function buildResult(array $data, array $metadataObservations = []): array
     {
-        $aiScore = round((float) ($data['ai_score'] ?? 0.5), 2);
+        $aiScore = round((float) ($data['probabilidade_ia'] ?? $data['ai_score'] ?? 0.5), 2);
 
         $classification = match (true) {
             $aiScore < 0.4 => 'human',
@@ -69,8 +69,20 @@ class AiDetectionService
             $explanation[] = 'Nenhuma marca identificável de geração por IA';
         }
 
-        $model = $data['model'] ?? 'desconhecido';
+        $model = $data['modelo_usado'] ?? $data['model'] ?? 'desconhecido';
         $explanation[] = "Modelo utilizado: {$model}";
+
+        if (isset($data['detalhes'])) {
+            $scoreModelo = $data['detalhes']['score_modelo'] ?? null;
+            $scoreFft    = $data['detalhes']['score_fft'] ?? null;
+            if ($scoreModelo !== null && $scoreFft !== null) {
+                $explanation[] = "Score classificador: {$scoreModelo} | Score FFT: {$scoreFft}";
+            }
+        }
+
+        if (!empty($data['aviso'])) {
+            $explanation[] = "⚠️ {$data['aviso']}";
+        }
 
         foreach ($metadataObservations as $observation) {
             $explanation[] = "⚠️ Observação: {$observation}";
