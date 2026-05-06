@@ -14,10 +14,12 @@ class TextAnalysisController extends Controller
 
     public function store(AnalyzeTextRequest $request)
     {
-        $content = $request->validated()['content'];
+        $validated = $request->validated();
+        $content   = $validated['content'];
+        $model     = $validated['model'];
 
         try {
-            $result = $this->service->analyzeText($content);
+            $result = $this->service->analyzeText($content, $model);
         } catch (\InvalidArgumentException $e) {
             return back()->withErrors(['content' => $e->getMessage()])->withInput();
         } catch (\RuntimeException $e) {
@@ -29,6 +31,7 @@ class TextAnalysisController extends Controller
             'ai_score'       => $result['ai_score'],
             'classification' => $result['classification'],
             'explanation'    => $result['explanation'],
+            'model'          => $model,
         ]);
 
         return redirect()->route('text-analyses.show', $analysis);

@@ -12,6 +12,15 @@ const classificationConfig = {
     ai:           { label: 'Gerado por IA', bg: 'bg-red-500/15',     text: 'text-red-400',     dot: 'bg-red-400',     border: 'border-red-500/25'     },
 };
 
+const modelConfig = {
+    bert:         { label: 'BERT',         cls: 'bg-violet-500/15 text-violet-400 border-violet-500/25' },
+    detecting_ai: { label: 'Detecting-AI', cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' },
+};
+
+function modelBadge(model) {
+    return modelConfig[model] ?? modelConfig['detecting_ai'];
+}
+
 function formatDate(dateStr) {
     return new Date(dateStr).toLocaleString('pt-BR', {
         day: '2-digit', month: '2-digit', year: 'numeric',
@@ -83,6 +92,7 @@ function truncate(text, len = 90) {
                                 <th class="px-6 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">Texto</th>
                                 <th class="px-4 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">Score</th>
                                 <th class="px-4 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">Classificação</th>
+                                <th class="px-4 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider hidden md:table-cell">Modelo</th>
                                 <th class="px-4 py-3.5 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider hidden sm:table-cell">Data</th>
                                 <th class="px-4 py-3.5"></th>
                             </tr>
@@ -122,6 +132,12 @@ function truncate(text, len = 90) {
                                         <span class="w-1.5 h-1.5 rounded-full" :class="classificationConfig[item.classification].dot"></span>
                                         {{ classificationConfig[item.classification].label }}
                                     </span>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap hidden md:table-cell">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border"
+                                        :class="modelBadge(item.model).cls"
+                                    >{{ modelBadge(item.model).label }}</span>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
                                     <span class="text-xs text-zinc-500">{{ formatDate(item.created_at) }}</span>

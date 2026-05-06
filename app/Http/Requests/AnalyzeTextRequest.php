@@ -15,6 +15,7 @@ class AnalyzeTextRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string', 'min:100', 'max:5000'],
+            'model'   => ['required', 'in:detecting_ai,bert'],
         ];
     }
 
@@ -24,6 +25,8 @@ class AnalyzeTextRequest extends FormRequest
             'content.required' => 'O texto é obrigatório.',
             'content.min'      => 'O texto deve ter pelo menos 100 caracteres.',
             'content.max'      => 'O texto não pode ter mais de 5.000 caracteres.',
+            'model.required'   => 'Selecione um modelo de análise.',
+            'model.in'         => 'Modelo inválido.',
         ];
     }
 }

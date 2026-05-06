@@ -11,6 +11,8 @@ COPY docker/python/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY docker/python/app.py .
+COPY docker/python/bert_detector.py .
+COPY docker/python/detecting_ai.py .
 
 # Diretório de cache dos modelos HuggingFace (montado como volume)
 ENV HF_HOME=/cache/huggingface

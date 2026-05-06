@@ -15,6 +15,7 @@ class TextAnalysis extends Model
         'ai_score',
         'classification',
         'explanation',
+        'model',
     ];
 
     protected $casts = [

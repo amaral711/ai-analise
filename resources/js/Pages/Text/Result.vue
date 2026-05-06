@@ -45,10 +45,17 @@ const RADIUS = 52;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const strokeDashoffset = computed(() => CIRCUMFERENCE * (1 - props.analysis.ai_score));
 
-const textPreview = computed(() => {
-    const t = props.analysis.content ?? '';
-    return t.length > 300 ? t.slice(0, 300) + '…' : t;
-});
+const textPreview = computed(() => props.analysis.content ?? '');
+
+const modelLabel = computed(() =>
+    props.analysis.model === 'bert' ? 'BERT Português' : 'Detecting-AI'
+);
+
+const modelBadgeClass = computed(() =>
+    props.analysis.model === 'bert'
+        ? 'bg-violet-500/15 text-violet-400 border-violet-500/25'
+        : 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25'
+);
 </script>
 
 <template>
@@ -114,13 +121,19 @@ const textPreview = computed(() => {
 
                         <!-- Info -->
                         <div class="flex-1 text-center sm:text-left">
-                            <span
-                                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold border"
-                                :class="[cfg.badgeBg, cfg.badgeText, cfg.badgeBorder]"
-                            >
-                                <span class="w-2 h-2 rounded-full" :class="cfg.dotColor"></span>
-                                {{ cfg.label }}
-                            </span>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span
+                                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold border"
+                                    :class="[cfg.badgeBg, cfg.badgeText, cfg.badgeBorder]"
+                                >
+                                    <span class="w-2 h-2 rounded-full" :class="cfg.dotColor"></span>
+                                    {{ cfg.label }}
+                                </span>
+                                <span
+                                    class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border"
+                                    :class="modelBadgeClass"
+                                >{{ modelLabel }}</span>
+                            </div>
                             <p class="text-zinc-400 text-sm mt-3">{{ cfg.sublabel }}</p>
 
                             <!-- Scale bar -->
