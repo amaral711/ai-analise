@@ -1,5 +1,6 @@
 import io
 
+import cv2
 import numpy as np
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from PIL import Image
@@ -9,6 +10,9 @@ from transformers import pipeline
 import bert_detector
 import detecting_ai
 import image_fft_analyzer
+from image_flat_analyzer import analisar_flat_design, is_flat_design
+from image_metadata_analyzer import check_ai_metadata
+from image_style_analyzer import analisar_estilo_cartoon, is_cartoon
 
 IMAGE_MODEL      = "umm-maybe/AI-image-detector"
 ALLOWED_IMG_EXTS = {"jpg", "jpeg", "png", "webp"}
@@ -60,31 +64,60 @@ def _verdict(score: float) -> str:
 
 
 def _classify_image(image_bytes: bytes) -> dict:
-    img    = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-    result = get_image_classifier()(img)[0]
-    label  = result["label"]
-    score  = result["score"]
+    meta = check_ai_metadata(image_bytes)
+
+    img_pil = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    result  = get_image_classifier()(img_pil)[0]
+    label   = result["label"]
+    score   = result["score"]
 
     score_modelo = round(score if _is_ai_image_label(label) else 1.0 - score, 4)
     score_fft    = image_fft_analyzer.analyze_fft(image_bytes)
 
-    score_final = round((score_modelo * 0.35) + (score_fft * 0.65), 4)
+    nparr = np.frombuffer(image_bytes, np.uint8)
+    img_cv = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-    output = {
-        "modelo_usado":     "umm-maybe+fft",
+    if img_cv is not None and is_cartoon(img_cv):
+        score_estilo = analisar_estilo_cartoon(img_cv)
+        score_flat   = None
+        # modelo e FFT são pouco confiáveis para cartoon — estilo domina
+        score_final  = round((score_modelo * 0.05) + (score_fft * 0.05) + (score_estilo * 0.90), 4)
+        modo         = "cartoon"
+    elif img_cv is not None and is_flat_design(img_cv):
+        score_estilo = None
+        score_flat   = analisar_flat_design(img_cv)
+        score_final  = round((score_modelo * 0.10) + (score_fft * 0.15) + (score_flat * 0.75), 4)
+        modo         = "flat_design"
+    else:
+        score_estilo = None
+        score_flat   = None
+        score_final  = round((score_modelo * 0.35) + (score_fft * 0.65), 4)
+        modo         = "fotorrealista"
+
+    if meta["encontrado"]:
+        score_final = max(score_final, 0.95)
+        print(f"[DEBUG META] indicadores={meta['indicadores']} score_override={score_final}", flush=True)
+
+    aviso = None
+    if abs(score_modelo - score_fft) > 0.5:
+        aviso = "Detectores divergentes: resultado pode ser impreciso"
+
+    return {
+        "modelo_usado":     "umm-maybe+fft+style+flat+meta",
         "veredicto":        _verdict(score_final),
         "probabilidade_ia": score_final,
         "confianca":        _confidence(score_final),
         "detalhes": {
-            "score_modelo": score_modelo,
-            "score_fft":    score_fft,
+            "score_modelo":        score_modelo,
+            "score_fft":           score_fft,
+            "score_estilo":        score_estilo,
+            "score_flat":          score_flat,
+            "modo_detectado":      modo,
+            "metadata_ia":         meta["encontrado"],
+            "metadata_indicadores": meta["indicadores"] if meta["encontrado"] else [],
         },
+        "aviso": aviso,
     }
-
-    if abs(score_modelo - score_fft) > 0.5:
-        output["aviso"] = "Detectores divergentes: resultado pode ser impreciso"
-
-    return output
 
 
 # ─── Schemas ──────────────────────────────────────────────────────────────────
@@ -116,8 +149,8 @@ def list_models():
         },
         {
             "id":        "image_detector",
-            "nome":      "umm-maybe + FFT",
-            "descricao": "Classificador base combinado com análise de frequência para detectar gerações modernas (Midjourney v6, DALL-E 3, Flux)",
+            "nome":      "umm-maybe + FFT + Style + Flat",
+            "descricao": "Classificador base + análise de frequência + análise de estilo cartoon + análise de flat design. Detecta fotorrealismo, cartoon e ilustrações educacionais gerados por IA.",
         },
     ]
 
