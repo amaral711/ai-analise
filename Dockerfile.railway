@@ -1,8 +1,15 @@
 # syntax=docker/dockerfile:1
 
+# ---- Composer dependencies (necessário para o Ziggy no build do Vite) ----
+FROM composer:2 AS vendor
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
+
 # ---- Build frontend ----
 FROM node:20-alpine AS frontend
 WORKDIR /app
+COPY --from=vendor /app/vendor ./vendor
 COPY package*.json ./
 RUN npm ci
 COPY . .
