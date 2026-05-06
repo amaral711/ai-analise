@@ -3,7 +3,13 @@
   "services": {
     "laravel": {
       "build": {
-        "dockerfilePath": "Dockerfile.railway"
+        "dockerfilePath": "Dockerfile.railway",
+        "args": {
+          "VITE_REVERB_APP_KEY": "${{VITE_REVERB_APP_KEY}}",
+          "VITE_REVERB_HOST": "${{VITE_REVERB_HOST}}",
+          "VITE_REVERB_PORT": "${{VITE_REVERB_PORT}}",
+          "VITE_REVERB_SCHEME": "${{VITE_REVERB_SCHEME}}"
+        }
       },
       "deploy": {
         "healthcheckPath": "/",
