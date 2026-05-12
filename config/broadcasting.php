@@ -36,12 +36,12 @@ return [
             'secret' => env('REVERB_APP_SECRET'),
             'app_id' => env('REVERB_APP_ID'),
             'options' => [
-                // REVERB_SERVER_HOST is the internal hostname used by PHP/worker to reach Reverb
-                // (e.g. the Docker service name). Falls back to REVERB_HOST when not set.
+                // REVERB_SERVER_HOST/PORT/SCHEME are for internal PHP→Reverb communication.
+                // Use these to separate from the public REVERB_HOST/SCHEME used by browser clients.
                 'host' => env('REVERB_SERVER_HOST', env('REVERB_HOST')),
                 'port' => env('REVERB_SERVER_PORT', env('REVERB_PORT', 443)),
-                'scheme' => env('REVERB_SCHEME', 'https'),
-                'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
+                'scheme' => env('REVERB_SERVER_SCHEME', env('REVERB_SCHEME', 'https')),
+                'useTLS' => env('REVERB_SERVER_SCHEME', env('REVERB_SCHEME', 'https')) === 'https',
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
