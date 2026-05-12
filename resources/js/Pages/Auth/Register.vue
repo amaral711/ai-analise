@@ -34,7 +34,6 @@ const submit = () => {
                     type="text"
                     required
                     autofocus
-                    autocomplete="name"
                     placeholder="Seu nome completo"
                     class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
                            focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
@@ -50,7 +49,6 @@ const submit = () => {
                     v-model="form.email"
                     type="email"
                     required
-                    autocomplete="username"
                     placeholder="seu@email.com"
                     class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
                            focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
@@ -66,7 +64,6 @@ const submit = () => {
                     v-model="form.password"
                     type="password"
                     required
-                    autocomplete="new-password"
                     placeholder="Mínimo 8 caracteres"
                     class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
                            focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
@@ -82,7 +79,6 @@ const submit = () => {
                     v-model="form.password_confirmation"
                     type="password"
                     required
-                    autocomplete="new-password"
                     placeholder="Repita a senha"
                     class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
                            focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"

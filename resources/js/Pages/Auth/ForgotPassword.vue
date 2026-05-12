@@ -49,7 +49,6 @@ const submit = () => {
                     v-model="form.email"
                     required
                     autofocus
-                    autocomplete="username"
                 />
 
                 <InputError class="mt-2" :message="form.errors.email" />

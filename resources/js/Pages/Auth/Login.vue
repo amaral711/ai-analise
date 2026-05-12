@@ -42,7 +42,6 @@ const submit = () => {
                     type="email"
                     required
                     autofocus
-                    autocomplete="username"
                     placeholder="seu@email.com"
                     class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
                            focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
@@ -60,7 +59,6 @@ const submit = () => {
                     v-model="form.password"
                     type="password"
                     required
-                    autocomplete="current-password"
                     placeholder="••••••••"
                     class="w-full px-3.5 py-2.5 rounded-lg bg-card border border-input text-foreground placeholder:text-muted-foreground text-sm
                            focus:border-ring focus:ring-1 focus:ring-ring focus:outline-none transition-colors"
