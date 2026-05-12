@@ -17,6 +17,7 @@ COPY docker/python/image_fft_analyzer.py .
 COPY docker/python/image_style_analyzer.py .
 COPY docker/python/image_flat_analyzer.py .
 COPY docker/python/image_metadata_analyzer.py .
+COPY docker/python/analyze_image.py .
 
 # Diretório de cache dos modelos HuggingFace (montado como volume)
 ENV HF_HOME=/cache/huggingface

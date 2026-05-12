@@ -91,15 +91,25 @@ def _classify_image(image_bytes: bytes) -> dict:
     else:
         score_estilo = None
         score_flat   = None
-        score_final  = round((score_modelo * 0.35) + (score_fft * 0.65), 4)
-        modo         = "fotorrealista"
+        if score_modelo >= 0.70:
+            # Classificador já concluiu: FFT é ruído para imagens editadas/comprimidas
+            score_final = score_modelo
+        elif score_modelo <= 0.40:
+            # Classificador já concluiu o contrário: idem
+            score_final = score_modelo
+        else:
+            # Zona inconclusiva: FFT entra como desempate
+            score_final = round((score_modelo * 0.55) + (score_fft * 0.45), 4)
+        modo = "fotorrealista"
 
     if meta["encontrado"]:
         score_final = max(score_final, 0.95)
         print(f"[DEBUG META] indicadores={meta['indicadores']} score_override={score_final}", flush=True)
 
     aviso = None
-    if abs(score_modelo - score_fft) > 0.5:
+    if score_modelo >= 0.70 and score_fft < 0.40:
+        aviso = "FFT divergente ignorado — classificador concluiu com alta confiança"
+    elif abs(score_modelo - score_fft) > 0.5:
         aviso = "Detectores divergentes: resultado pode ser impreciso"
 
     return {
