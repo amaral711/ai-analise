@@ -13,18 +13,19 @@ class AudioAnalysisController extends Controller
 {
     public function store(AnalyzeAudioRequest $request)
     {
-        $file = $request->file('audio');
+        $file  = $request->file('audio');
+        $ext   = $file->getClientOriginalExtension();
+        $s3Key = 'audio/' . uniqid() . '.' . $ext;
 
-        $ext      = $file->getClientOriginalExtension();
-        $tempPath = 'pending/' . uniqid() . '.' . $ext;
-        Storage::disk('local')->put($tempPath, file_get_contents($file->path()));
+        Storage::disk('s3')->put($s3Key, file_get_contents($file->path()), 'public');
 
         $analysis = $request->user()->audioAnalyses()->create([
-            'text'   => $file->getClientOriginalName(),
-            'status' => 'pending',
+            'text'       => $file->getClientOriginalName(),
+            'audio_path' => $s3Key,
+            'status'     => 'pending',
         ]);
 
-        AnalyzeAudioJob::dispatch($analysis, $tempPath, $file->getClientOriginalName());
+        AnalyzeAudioJob::dispatch($analysis, $s3Key, $file->getClientOriginalName());
 
         return redirect()->route('analyses.waiting');
     }

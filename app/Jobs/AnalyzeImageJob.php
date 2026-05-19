@@ -30,22 +30,16 @@ class AnalyzeImageJob implements ShouldQueue
     {
         $this->analysis->update(['status' => 'processing']);
 
+        $tmpPath = null;
+
         try {
-            $localPath = Storage::disk('local')->path($this->tempPath);
+            $contents = Storage::disk('s3')->get($this->tempPath);
+            $tmpPath  = tempnam(sys_get_temp_dir(), 'anlz_');
+            file_put_contents($tmpPath, $contents);
 
-            $result = $service->analyzeFromPath($localPath, $this->originalName);
-
-            $ext    = pathinfo($this->tempPath, PATHINFO_EXTENSION);
-            $s3Key  = uniqid() . '.' . $ext;
-
-            Storage::disk('s3')->put(
-                $s3Key,
-                Storage::disk('local')->get($this->tempPath),
-                'public'
-            );
+            $result = $service->analyzeFromPath($tmpPath, $this->originalName);
 
             $this->analysis->update([
-                'image_path'     => $s3Key,
                 'ai_score'       => $result['ai_score'],
                 'classification' => $result['classification'],
                 'explanation'    => $result['explanation'],
@@ -58,7 +52,9 @@ class AnalyzeImageJob implements ShouldQueue
             AnalysisFailed::dispatch($this->analysis, 'image');
             throw $e;
         } finally {
-            Storage::disk('local')->delete($this->tempPath);
+            if ($tmpPath && file_exists($tmpPath)) {
+                unlink($tmpPath);
+            }
         }
     }
 }

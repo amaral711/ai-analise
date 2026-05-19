@@ -13,18 +13,19 @@ class AnalysisController extends Controller
 {
     public function store(AnalyzeImageRequest $request)
     {
-        $file = $request->file('image');
+        $file  = $request->file('image');
+        $ext   = $file->getClientOriginalExtension();
+        $s3Key = uniqid() . '.' . $ext;
 
-        $ext      = $file->getClientOriginalExtension();
-        $tempPath = 'pending/' . uniqid() . '.' . $ext;
-        Storage::disk('local')->put($tempPath, file_get_contents($file->path()));
+        Storage::disk('s3')->put($s3Key, file_get_contents($file->path()), 'public');
 
         $analysis = $request->user()->analyses()->create([
-            'text'   => $file->getClientOriginalName(),
-            'status' => 'pending',
+            'text'       => $file->getClientOriginalName(),
+            'image_path' => $s3Key,
+            'status'     => 'pending',
         ]);
 
-        AnalyzeImageJob::dispatch($analysis, $tempPath, $file->getClientOriginalName());
+        AnalyzeImageJob::dispatch($analysis, $s3Key, $file->getClientOriginalName());
 
         return redirect()->route('analyses.waiting');
     }
