@@ -19,6 +19,7 @@ class AnalyzeImageJob implements ShouldQueue
 
     public int $timeout = 300;
     public int $tries = 2;
+    public bool $deleteWhenMissingModels = true;
 
     public function __construct(
         public Analysis $analysis,
