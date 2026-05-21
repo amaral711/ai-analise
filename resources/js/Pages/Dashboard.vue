@@ -70,7 +70,7 @@ function submit() {
                         Análise síncrona
                     </span>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground text-xs">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
                         Suporta JPG, PNG, WebP
                     </span>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground text-xs">

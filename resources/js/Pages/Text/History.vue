@@ -51,7 +51,7 @@ function truncate(text, len = 90) {
                 </div>
                 <Link
                     :href="route('text.upload')"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white hover:bg-blue-500 transition-colors"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -78,7 +78,7 @@ function truncate(text, len = 90) {
                         </div>
                         <Link
                             :href="route('text.upload')"
-                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-500 transition-colors mt-1"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors mt-1"
                         >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
@@ -149,7 +149,7 @@ function truncate(text, len = 90) {
                                 <td class="px-4 py-4 whitespace-nowrap text-right">
                                     <Link
                                         :href="route('text-analyses.show', item.id)"
-                                        class="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-blue-400 group-hover:text-foreground/80 transition-colors"
+                                        class="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary group-hover:text-foreground/80 transition-colors"
                                     >
                                         Ver
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
@@ -177,7 +177,7 @@ function truncate(text, len = 90) {
                                 v-html="link.label"
                                 class="px-3 py-1.5 text-xs rounded-lg border transition-colors"
                                 :class="link.active
-                                    ? 'bg-blue-600 text-white border-blue-600'
+                                    ? 'bg-primary text-primary-foreground border-primary'
                                     : 'text-muted-foreground border-border hover:bg-secondary hover:text-foreground'"
                                 :aria-disabled="!link.url"
                             />
