@@ -12,6 +12,10 @@ const classificationConfig = {
     ai:           { label: 'Gerado por IA', bg: 'bg-red-500/15',     text: 'text-red-400',     dot: 'bg-red-400',     border: 'border-red-500/25'     },
 };
 
+function getClassConfig(classification) {
+    return classificationConfig[classification] ?? classificationConfig['inconclusive'];
+}
+
 const modelConfig = {
     bert:         { label: 'BERT',         cls: 'bg-primary/15 text-primary border-primary/25' },
     detecting_ai: { label: 'Detecting-AI', cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' },
@@ -111,7 +115,7 @@ function truncate(text, len = 90) {
                                         <div class="w-12 h-1.5 rounded-full bg-secondary overflow-hidden">
                                             <div
                                                 class="h-full rounded-full"
-                                                :class="classificationConfig[item.classification].dot"
+                                                :class="getClassConfig(item.classification).dot"
                                                 :style="{ width: Math.round(item.ai_score * 100) + '%', opacity: 0.7 }"
                                             ></div>
                                         </div>
@@ -124,13 +128,13 @@ function truncate(text, len = 90) {
                                     <span
                                         class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border"
                                         :class="[
-                                            classificationConfig[item.classification].bg,
-                                            classificationConfig[item.classification].text,
-                                            classificationConfig[item.classification].border,
+                                            getClassConfig(item.classification).bg,
+                                            getClassConfig(item.classification).text,
+                                            getClassConfig(item.classification).border,
                                         ]"
                                     >
-                                        <span class="w-1.5 h-1.5 rounded-full" :class="classificationConfig[item.classification].dot"></span>
-                                        {{ classificationConfig[item.classification].label }}
+                                        <span class="w-1.5 h-1.5 rounded-full" :class="getClassConfig(item.classification).dot"></span>
+                                        {{ getClassConfig(item.classification).label }}
                                     </span>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap hidden md:table-cell">
