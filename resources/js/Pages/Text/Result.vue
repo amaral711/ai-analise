@@ -39,7 +39,7 @@ const classificationConfig = {
     },
 };
 
-const cfg = computed(() => classificationConfig[props.analysis.classification]);
+const cfg = computed(() => classificationConfig[props.analysis.classification] ?? classificationConfig.inconclusive);
 
 const RADIUS = 52;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
