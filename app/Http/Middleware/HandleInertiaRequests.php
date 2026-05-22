@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -34,6 +35,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'credits'  => fn () => Auth::user()?->credits ?? 0,
+            'is_admin' => fn () => Auth::user()?->hasRole('admin') ?? false,
         ];
     }
 }

@@ -110,6 +110,20 @@ services:
       - analise_network
     command: npm run dev
 
+  ngrok:
+    image: ngrok/ngrok:3
+    container_name: analise_ngrok
+    restart: unless-stopped
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    command: http nginx:80 --log=stdout
+    ports:
+      - "4040:4040"
+    networks:
+      - analise_network
+    depends_on:
+      - nginx
+
   python-ai:
     build:
       context: .

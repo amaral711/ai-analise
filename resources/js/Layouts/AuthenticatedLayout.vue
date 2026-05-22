@@ -1,11 +1,13 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { useTheme } from '@/composables/useTheme.js';
 import AnalysisProgressWidget from '@/Components/AnalysisProgressWidget.vue';
 
 const page = usePage();
 const user = page.props.auth.user;
+const credits = computed(() => page.props.credits ?? 0);
+const isAdmin = computed(() => page.props.is_admin ?? false);
 const showMobileSidebar = ref(false);
 const { isDark, toggle } = useTheme();
 
@@ -68,7 +70,7 @@ const navItems = [
             </div>
 
             <!-- Nav -->
-            <nav class="flex-1 px-3 py-4 space-y-0.5">
+            <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
                 <Link
                     v-for="item in navItems"
                     :key="item.routeName"
@@ -83,6 +85,41 @@ const navItems = [
                         <path stroke-linecap="round" stroke-linejoin="round" :d="item.icon" />
                     </svg>
                     {{ item.label }}
+                </Link>
+
+                <!-- Créditos -->
+                <Link
+                    :href="route('credits.index')"
+                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150"
+                    :class="route().current('credits.*')
+                        ? 'bg-primary/10 text-primary ring-1 ring-primary/20'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'"
+                    @click="showMobileSidebar = false"
+                >
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <span class="flex-1">Créditos</span>
+                    <span class="text-xs font-mono px-1.5 py-0.5 rounded-md"
+                        :class="credits > 0 ? 'bg-primary/15 text-primary' : 'bg-destructive/15 text-destructive'">
+                        {{ credits }}
+                    </span>
+                </Link>
+
+                <!-- Admin (apenas para admins) -->
+                <Link
+                    v-if="isAdmin"
+                    :href="route('admin.dashboard')"
+                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150"
+                    :class="route().current('admin.*')
+                        ? 'bg-primary/10 text-primary ring-1 ring-primary/20'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'"
+                    @click="showMobileSidebar = false"
+                >
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                    </svg>
+                    Admin
                 </Link>
             </nav>
 

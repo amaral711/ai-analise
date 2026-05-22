@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AnalyzeAudioRequest;
 use App\Jobs\AnalyzeAudioJob;
 use App\Models\AudioAnalysis;
+use App\Services\CreditService;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AudioAnalysisController extends Controller
 {
+    public function __construct(private CreditService $creditService) {}
+
     public function store(AnalyzeAudioRequest $request)
     {
         $file  = $request->file('audio');
@@ -26,6 +29,8 @@ class AudioAnalysisController extends Controller
         ]);
 
         AnalyzeAudioJob::dispatch($analysis, $s3Key, $file->getClientOriginalName());
+
+        $this->creditService->deductForAnalysis($request->user(), 'audio', $analysis->id);
 
         return redirect()->route('analyses.waiting');
     }

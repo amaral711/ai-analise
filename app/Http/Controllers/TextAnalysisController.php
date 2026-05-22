@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AnalyzeTextRequest;
 use App\Jobs\AnalyzeTextJob;
 use App\Models\TextAnalysis;
+use App\Services\CreditService;
 use Inertia\Inertia;
 use Inertia\Response;
 
 
 class TextAnalysisController extends Controller
 {
+    public function __construct(private CreditService $creditService) {}
+
     public function store(AnalyzeTextRequest $request)
     {
         $validated = $request->validated();
@@ -22,6 +25,8 @@ class TextAnalysisController extends Controller
         ]);
 
         AnalyzeTextJob::dispatch($analysis);
+
+        $this->creditService->deductForAnalysis($request->user(), 'text', $analysis->id);
 
         return redirect()->route('analyses.waiting');
     }

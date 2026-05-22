@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AnalyzeImageRequest;
 use App\Jobs\AnalyzeImageJob;
 use App\Models\Analysis;
+use App\Services\CreditService;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AnalysisController extends Controller
 {
+    public function __construct(private CreditService $creditService) {}
+
     public function store(AnalyzeImageRequest $request)
     {
         $file  = $request->file('image');
@@ -26,6 +29,8 @@ class AnalysisController extends Controller
         ]);
 
         AnalyzeImageJob::dispatch($analysis, $s3Key, $file->getClientOriginalName());
+
+        $this->creditService->deductForAnalysis($request->user(), 'image', $analysis->id);
 
         return redirect()->route('analyses.waiting');
     }
