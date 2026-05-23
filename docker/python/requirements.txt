@@ -2,9 +2,4 @@ fastapi
 uvicorn
 transformers>=4.46.0
 tokenizers>=0.20.0
-python-multipart
-Pillow
 numpy>=1.26.0
-opencv-python-headless
-exifread
-scipy
