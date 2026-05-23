@@ -3,6 +3,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
+function printResult() {
+    window.print();
+}
+
 const props = defineProps({
     analysis: Object,
 });
@@ -67,7 +71,16 @@ const modelBadgeClass = computed(() => (modelConfig[props.analysis.model] ?? mod
                     <h1 class="text-foreground text-base font-semibold">Resultado da Análise</h1>
                     <p class="text-muted-foreground text-sm mt-0.5">Análise concluída com sucesso</p>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 print:hidden">
+                    <button
+                        @click="printResult"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors border border-border"
+                    >
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+                        </svg>
+                        Exportar PDF
+                    </button>
                     <Link
                         :href="route('text-analyses.index')"
                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors border border-border"
@@ -197,3 +210,45 @@ const modelBadgeClass = computed(() => (modelConfig[props.analysis.model] ?? mod
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style>
+@media print {
+    /* Ocultar sidebar, topbar, header e widget flutuante */
+    aside,
+    [data-layout-header],
+    [data-content] > div > *:not(.print-area) { }
+
+    aside { display: none !important; }
+
+    /* Topbar */
+    .flex.items-center.gap-4.px-4.py-3.border-b { display: none !important; }
+
+    /* Header da página */
+    header[data-layout-header] { display: none !important; }
+
+    /* Widget flutuante */
+    [class*="AnalysisProgress"] { display: none !important; }
+
+    /* Layout: remover flex do shell, mostrar só o conteúdo */
+    .flex.h-screen { display: block !important; }
+    main[data-content] { overflow: visible !important; }
+
+    /* Fundo branco, texto preto */
+    body, .bg-background, .bg-card { background: #fff !important; color: #111 !important; }
+    .text-foreground, .text-foreground\/80, .text-foreground\/90 { color: #111 !important; }
+    .text-muted-foreground { color: #555 !important; }
+
+    /* Bordas visíveis sem sombra */
+    .border, .border-border { border-color: #e5e7eb !important; }
+    .shadow-sm, .shadow-lg { box-shadow: none !important; }
+
+    /* Garantir que círculo SVG apareça com cor certa */
+    circle { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+
+    /* Texto analisado: evitar quebra de página */
+    .whitespace-pre-wrap { white-space: pre-wrap; }
+
+    /* Margem da página */
+    @page { margin: 20mm; }
+}
+</style>
