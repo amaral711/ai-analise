@@ -6,14 +6,6 @@ const user = usePage().props.auth.user;
 
 const tools = [
     {
-        label: 'Análise de Imagem',
-        description: 'Detecte imagens geradas por DALL-E, Midjourney, Stable Diffusion e outros modelos. Suporta JPG, PNG e WebP.',
-        routeName: 'image.upload',
-        color: 'violet',
-        icon: 'M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z',
-        badge: 'JPG · PNG · WebP',
-    },
-    {
         label: 'Análise de Texto',
         description: 'Identifique padrões característicos de texto gerado por ChatGPT, Claude, Gemini e outros LLMs.',
         routeName: 'text.upload',
@@ -21,34 +13,14 @@ const tools = [
         icon: 'M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z',
         badge: '100 – 5.000 caracteres',
     },
-    {
-        label: 'Análise de Áudio',
-        description: 'Detecte vozes e sons sintéticos gerados por IA em gravações de áudio. Suporta MP3, WAV, OGG e M4A.',
-        routeName: 'audio.upload',
-        color: 'emerald',
-        icon: 'M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z',
-        badge: 'MP3 · WAV · OGG · M4A',
-    },
 ];
 
 const colorMap = {
-    violet: {
-        icon: 'bg-primary/10 text-primary',
-        hover: 'hover:border-primary/30 ',
-        badge: 'bg-primary/5 text-primary border-primary/20 ',
-        arrow: 'text-primary',
-    },
     blue: {
         icon: 'bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400',
         hover: 'hover:border-blue-300 dark:hover:border-blue-500/40 ',
         badge: 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20',
         arrow: 'text-blue-500 dark:text-blue-400',
-    },
-    emerald: {
-        icon: 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-        hover: 'hover:border-emerald-300 dark:hover:border-emerald-500/40 ',
-        badge: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20',
-        arrow: 'text-emerald-500 dark:text-emerald-400',
     },
 };
 </script>
@@ -104,27 +76,13 @@ const colorMap = {
                 </div>
 
                 <!-- Históricos rápidos -->
-                <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <a :href="route('image-analyses.index')"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-all text-sm">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        Histórico de imagens
-                    </a>
+                <div class="mt-10 grid grid-cols-1 md:grid-cols-1 gap-4">
                     <a :href="route('text-analyses.index')"
                         class="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-500/30 transition-all text-sm">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                         Histórico de textos
-                    </a>
-                    <a :href="route('audio-analyses.index')"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-200 dark:hover:border-emerald-500/30 transition-all text-sm">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        Histórico de áudios
                     </a>
                 </div>
 
