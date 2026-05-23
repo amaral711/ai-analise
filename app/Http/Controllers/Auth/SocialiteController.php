@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserIp;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -28,6 +29,12 @@ class SocialiteController extends Controller
         );
 
         $isNew = !$user->exists;
+
+        if ($isNew && UserIp::where('ip', request()->ip())->exists()) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Já existe uma conta associada a este endereço de rede.',
+            ]);
+        }
 
         $user->fill([
             'name'              => $googleUser->getName(),

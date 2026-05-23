@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Listeners\GrantFreemiumCredits;
+use App\Listeners\RecordUserIp;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Vite;
@@ -20,5 +22,6 @@ class AppServiceProvider extends ServiceProvider
         Vite::prefetch(concurrency: 3);
 
         Event::listen(Registered::class, GrantFreemiumCredits::class);
+        Event::listen(Login::class, RecordUserIp::class);
     }
 }
