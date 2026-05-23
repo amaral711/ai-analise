@@ -8,6 +8,7 @@ use App\Services\CreditService;
 use App\Services\MercadoPagoService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
@@ -18,11 +19,26 @@ class WebhookController extends Controller
 
     public function mercadopago(Request $request): Response
     {
+        Log::channel('stderr')->info('[MP Webhook] received', [
+            'headers' => [
+                'x-signature'  => $request->header('x-signature'),
+                'x-request-id' => $request->header('x-request-id'),
+            ],
+            'body' => $request->all(),
+        ]);
+
         if (! $this->mercadoPago->validateWebhookSignature($request)) {
+            Log::channel('stderr')->warning('[MP Webhook] signature validation failed', [
+                'x-signature'  => $request->header('x-signature'),
+                'x-request-id' => $request->header('x-request-id'),
+                'body'         => $request->all(),
+            ]);
             return response('Unauthorized', 401);
         }
 
         $type = $request->input('type') ?? $request->input('action', '');
+
+        Log::channel('stderr')->info('[MP Webhook] type', ['type' => $type]);
 
         if (! in_array($type, ['payment', 'payment.updated'])) {
             return response('OK', 200);

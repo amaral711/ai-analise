@@ -6,8 +6,10 @@ use App\Models\CreditPackage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use MercadoPago\Client\Payment\PaymentClient;
+use MercadoPago\Exceptions\InvalidWebhookSignatureException;
 use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
+use MercadoPago\Webhook\WebhookSignatureValidator;
 
 class MercadoPagoService
 {
@@ -69,26 +71,17 @@ class MercadoPagoService
             return true;
         }
 
-        $signatureHeader = $request->header('x-signature', '');
-        $requestId       = $request->header('x-request-id', '');
+        try {
+            WebhookSignatureValidator::validate(
+                xSignature: $request->header('x-signature'),
+                xRequestId: $request->header('x-request-id'),
+                dataId:     (string) $request->input('data.id', ''),
+                secret:     $secret,
+            );
 
-        $parts = [];
-        foreach (explode(';', $signatureHeader) as $part) {
-            [$key, $value] = explode('=', $part, 2);
-            $parts[trim($key)] = trim($value);
-        }
-
-        $ts = $parts['ts'] ?? '';
-        $v1 = $parts['v1'] ?? '';
-
-        if (! $ts || ! $v1) {
+            return true;
+        } catch (InvalidWebhookSignatureException) {
             return false;
         }
-
-        $dataId  = $request->input('data.id', '');
-        $message = "id:{$dataId};request-id:{$requestId};ts:{$ts}";
-        $hash    = hash_hmac('sha256', $message, $secret);
-
-        return hash_equals($hash, $v1);
     }
 }
