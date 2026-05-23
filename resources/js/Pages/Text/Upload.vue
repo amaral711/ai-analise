@@ -9,7 +9,7 @@ const charCount = computed(() => form.content.length);
 const isValid   = computed(() => charCount.value >= 100 && charCount.value <= 5000);
 
 const models = [
-    { value: 'bert',   label: 'BERT',     description: 'Modelo BERT em português',        credits: 1, premium: false },
+    { value: 'bert',   label: 'Básico',   description: 'Modelo treinado em português',    credits: 1, premium: false },
     { value: 'claude', label: 'Avançado', description: 'Modelo mais preciso e confiável', credits: 2, premium: true  },
 ];
 
