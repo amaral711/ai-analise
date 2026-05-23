@@ -48,6 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
         Route::get('/users/{user}/credits', [CreditGrantController::class, 'show'])->name('users.credits');
         Route::post('/users/{user}/credits', [CreditGrantController::class, 'store'])->name('users.credits.store');
         Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');

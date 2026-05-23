@@ -66,12 +66,20 @@ watch(search, (val) => {
                                 {{ (user.analyses_count ?? 0) + (user.text_analyses_count ?? 0) + (user.audio_analyses_count ?? 0) }}
                             </td>
                             <td class="px-5 py-3 text-right">
-                                <Link
-                                    :href="route('admin.users.credits', user.id)"
-                                    class="text-xs text-primary hover:underline"
-                                >
-                                    Gerenciar créditos
-                                </Link>
+                                <div class="flex items-center justify-end gap-3">
+                                    <Link
+                                        :href="route('admin.users.show', user.id)"
+                                        class="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Ver análises
+                                    </Link>
+                                    <Link
+                                        :href="route('admin.users.credits', user.id)"
+                                        class="text-xs text-primary hover:underline"
+                                    >
+                                        Créditos
+                                    </Link>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

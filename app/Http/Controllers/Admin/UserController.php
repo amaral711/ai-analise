@@ -9,6 +9,18 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function show(User $user): Response
+    {
+        $analyses = $user->textAnalyses()
+            ->latest('created_at')
+            ->paginate(20);
+
+        return Inertia::render('Admin/Users/Show', [
+            'user'     => $user->only('id', 'name', 'email', 'credits', 'created_at'),
+            'analyses' => $analyses,
+        ]);
+    }
+
     public function index(): Response
     {
         $users = User::query()

@@ -36,7 +36,7 @@ class TextAnalysisController extends Controller
 
     public function show(TextAnalysis $textAnalysis): Response
     {
-        abort_if($textAnalysis->user_id !== auth()->id(), 403);
+        abort_if($textAnalysis->user_id !== auth()->id() && !auth()->user()->hasRole('admin'), 403);
 
         return Inertia::render('Text/Result', [
             'analysis' => $textAnalysis,

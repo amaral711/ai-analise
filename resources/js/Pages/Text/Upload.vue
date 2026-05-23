@@ -10,7 +10,7 @@ const isValid   = computed(() => charCount.value >= 100 && charCount.value <= 50
 
 const models = [
     { value: 'bert',   label: 'Básico',   description: 'Modelo treinado em português',    credits: 1, premium: false },
-    { value: 'claude', label: 'Avançado', description: 'Modelo mais preciso e confiável', credits: 2, premium: true  },
+    { value: 'claude', label: 'Avançado', description: 'Mais preciso · qualquer idioma',  credits: 2, premium: true  },
 ];
 
 const isMultilingual = computed(() => form.model === 'claude');
