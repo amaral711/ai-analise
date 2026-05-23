@@ -180,12 +180,12 @@ Evaluate these characteristics:
 Return ONLY valid JSON, no markdown, no extra text:
 {"ai_score": <float 0.0-1.0>, "reasoning": ["observation 1", "observation 2", "observation 3"]}
 
-Where:
+Rules:
 - ai_score: 0.0 = definitely human, 1.0 = definitely AI-generated
 - reasoning: 3-5 specific, concrete observations about the text patterns
-- Analyze in the same language as the submitted text (PT-BR, EN, ES, or other)';
+- CRITICAL: Write ALL reasoning observations in the SAME language as the submitted text. If the text is in Portuguese, write in Portuguese. If in English, write in English. Never mix languages.';
 
-        $cacheKey = 'text_analysis:claude:' . hash('sha256', $text);
+        $cacheKey = 'text_analysis:claude:v2:' . hash('sha256', $text);
 
         if ($cached = Cache::get($cacheKey)) {
             Log::info('Claude AI analysis cache hit', ['length' => strlen($text)]);
