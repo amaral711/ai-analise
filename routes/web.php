@@ -24,13 +24,12 @@ Route::post('/webhooks/mercadopago', [WebhookController::class, 'mercadopago'])
     ->name('webhooks.mercadopago');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Index'))->name('dashboard');
+    Route::get('/dashboard', fn () => Inertia::render('Text/Upload'))->name('dashboard');
 
     Route::get('/waiting', [WaitingController::class, 'index'])->name('analyses.waiting');
     Route::get('/analyses/pending', [WaitingController::class, 'pending'])->name('analyses.pending');
 
     // Análise de texto
-    Route::get('/text', fn () => Inertia::render('Text/Upload'))->name('text.upload');
     Route::post('/analyze/text', [TextAnalysisController::class, 'store'])->middleware('credits')->name('text-analyses.store');
     Route::get('/text-analyses', [TextAnalysisController::class, 'index'])->name('text-analyses.index');
     Route::get('/text-analyses/{textAnalysis}', [TextAnalysisController::class, 'show'])->name('text-analyses.show');

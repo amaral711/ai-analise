@@ -243,7 +243,7 @@ Rules:
         };
 
         $explanation   = array_values((array) ($parsed['reasoning'] ?? []));
-        $explanation[] = 'Modelo utilizado: Claude Haiku (análise semântica avançada)';
+        $explanation[] = 'Modelo utilizado: Análise semântica avançada';
 
         $result = [
             'ai_score'       => $aiScore,

@@ -11,7 +11,7 @@ const isValid   = computed(() => charCount.value >= 100 && charCount.value <= 50
 const models = [
     { value: 'bert',         label: 'BERT',         description: 'Modelo BERT em português',     credits: 1,  premium: false },
     { value: 'detecting_ai', label: 'Detecting-AI', description: 'Modelo especializado em IA',  credits: 1,  premium: false },
-    { value: 'claude',       label: 'Claude Haiku', description: 'Análise semântica avançada',  credits: 2,  premium: true  },
+    { value: 'claude',       label: 'Avançado',     description: 'Modelo mais preciso e confiável', credits: 2, premium: true },
 ];
 
 const isMultilingual = computed(() => form.model === 'claude');

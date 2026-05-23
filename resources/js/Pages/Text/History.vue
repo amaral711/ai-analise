@@ -51,7 +51,7 @@ function truncate(text, len = 90) {
                     </p>
                 </div>
                 <Link
-                    :href="route('text.upload')"
+                    :href="route('dashboard')"
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
@@ -78,7 +78,7 @@ function truncate(text, len = 90) {
                             <p class="text-muted-foreground text-sm mt-1">Faça sua primeira análise de texto para ver o histórico aqui.</p>
                         </div>
                         <Link
-                            :href="route('text.upload')"
+                            :href="route('dashboard')"
                             class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors mt-1"
                         >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">

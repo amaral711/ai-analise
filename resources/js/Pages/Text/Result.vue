@@ -78,7 +78,7 @@ const modelBadgeClass = computed(() => (modelConfig[props.analysis.model] ?? mod
                         Histórico
                     </Link>
                     <Link
-                        :href="route('text.upload')"
+                        :href="route('dashboard')"
                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                     >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
