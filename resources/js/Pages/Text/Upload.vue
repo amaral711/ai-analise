@@ -8,6 +8,14 @@ const form      = useForm({ content: '', model: 'bert' });
 const charCount = computed(() => form.content.length);
 const isValid   = computed(() => charCount.value >= 100 && charCount.value <= 5000);
 
+const models = [
+    { value: 'bert',         label: 'BERT',         description: 'Modelo BERT em português',     credits: 1,  premium: false },
+    { value: 'detecting_ai', label: 'Detecting-AI', description: 'Modelo especializado em IA',  credits: 1,  premium: false },
+    { value: 'claude',       label: 'Claude Haiku', description: 'Análise semântica avançada',  credits: 2,  premium: true  },
+];
+
+const isMultilingual = computed(() => form.model === 'claude');
+
 function submit() {
     form.post(route('text-analyses.store'));
 }
@@ -41,9 +49,9 @@ function submit() {
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                         Análise síncrona
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground text-xs">
-                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                        Modelos treinados em PT-BR
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground text-xs transition-colors">
+                        <span class="w-1.5 h-1.5 rounded-full" :class="isMultilingual ? 'bg-amber-400' : 'bg-primary'"></span>
+                        {{ isMultilingual ? 'Multilíngue (qualquer idioma)' : 'Modelos treinados em PT-BR' }}
                     </span>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground text-xs">
                         <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
@@ -66,6 +74,37 @@ function submit() {
                                    focus:outline-none focus:ring-0
                                    resize-none p-5"
                         ></textarea>
+
+                        <!-- Model selector -->
+                        <div class="border-t border-border px-4 py-3">
+                            <p class="text-xs text-muted-foreground mb-2.5">Modelo de análise</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button
+                                    v-for="m in models"
+                                    :key="m.value"
+                                    type="button"
+                                    @click="form.model = m.value"
+                                    class="relative flex flex-col items-start gap-0.5 rounded-lg border px-3 py-2.5 text-left text-xs transition-all"
+                                    :class="form.model === m.value
+                                        ? (m.premium
+                                            ? 'border-amber-500/50 bg-amber-500/10 text-amber-400'
+                                            : 'border-primary/50 bg-primary/10 text-primary')
+                                        : 'border-border bg-secondary/40 text-muted-foreground hover:bg-secondary hover:text-foreground'"
+                                >
+                                    <span class="font-semibold leading-none">{{ m.label }}</span>
+                                    <span class="leading-snug opacity-75 hidden sm:block">{{ m.description }}</span>
+                                    <span
+                                        class="mt-1 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium"
+                                        :class="m.premium
+                                            ? 'bg-amber-500/20 text-amber-400'
+                                            : 'bg-secondary text-muted-foreground'"
+                                    >
+                                        {{ m.credits }} crédito{{ m.credits > 1 ? 's' : '' }}
+                                        <span v-if="m.premium" class="font-semibold">· Premium</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
 
                         <!-- Toolbar -->
                         <div class="flex items-center justify-end gap-3 px-4 py-3 border-t border-border">
@@ -102,9 +141,10 @@ function submit() {
                         </div>
 
                         <!-- Errors -->
-                        <div v-if="form.errors.content || form.errors.model" class="px-5 pb-4 space-y-1">
+                        <div v-if="form.errors.content || form.errors.model || form.errors.credits" class="px-5 pb-4 space-y-1">
                             <InputError :message="form.errors.content" />
                             <InputError :message="form.errors.model" />
+                            <InputError :message="form.errors.credits" />
                         </div>
 
                     </form>

@@ -31,10 +31,10 @@ class CreditService
         });
     }
 
-    public function deductForAnalysis(User $user, string $analysisType, int $referenceId): void
+    public function deductForAnalysis(User $user, string $analysisType, int $referenceId, int $amount = 1): void
     {
-        DB::transaction(function () use ($user, $analysisType, $referenceId) {
-            $user->decrement('credits', 1);
+        DB::transaction(function () use ($user, $analysisType, $referenceId, $amount) {
+            $user->decrement('credits', $amount);
             $user->refresh();
 
             $labels = [
@@ -46,7 +46,7 @@ class CreditService
             CreditTransaction::create([
                 'user_id'        => $user->id,
                 'type'           => 'analysis_consumed',
-                'credits_delta'  => -1,
+                'credits_delta'  => -$amount,
                 'balance_after'  => $user->credits,
                 'description'    => $labels[$analysisType] ?? 'Análise realizada',
                 'reference_type' => $analysisType,

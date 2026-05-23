@@ -16,7 +16,12 @@ class TextAnalysisController extends Controller
 
     public function store(AnalyzeTextRequest $request)
     {
-        $validated = $request->validated();
+        $validated  = $request->validated();
+        $creditCost = $validated['model'] === 'claude' ? 2 : 1;
+
+        if (!$this->creditService->hasCredits($request->user(), $creditCost)) {
+            return back()->withErrors(['credits' => 'Créditos insuficientes para este modelo.']);
+        }
 
         $analysis = $request->user()->textAnalyses()->create([
             'content' => $validated['content'],
@@ -26,7 +31,7 @@ class TextAnalysisController extends Controller
 
         AnalyzeTextJob::dispatch($analysis);
 
-        $this->creditService->deductForAnalysis($request->user(), 'text', $analysis->id);
+        $this->creditService->deductForAnalysis($request->user(), 'text', $analysis->id, $creditCost);
 
         return redirect()->route('analyses.waiting');
     }

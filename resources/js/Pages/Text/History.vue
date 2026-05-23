@@ -17,8 +17,9 @@ function getClassConfig(classification) {
 }
 
 const modelConfig = {
-    bert:         { label: 'BERT',         cls: 'bg-primary/15 text-primary border-primary/25' },
-    detecting_ai: { label: 'Detecting-AI', cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' },
+    bert:         { label: 'BERT',                  cls: 'bg-primary/15 text-primary border-primary/25' },
+    detecting_ai: { label: 'Detecting-AI',           cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' },
+    claude:       { label: 'Claude (Premium)',        cls: 'bg-amber-500/15 text-amber-400 border-amber-500/25' },
 };
 
 function modelBadge(model) {

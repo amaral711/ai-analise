@@ -15,7 +15,7 @@ class AnalyzeTextRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string', 'min:100', 'max:5000'],
-            'model'   => ['required', 'in:detecting_ai,bert'],
+            'model'   => ['required', 'in:detecting_ai,bert,claude'],
         ];
     }
 

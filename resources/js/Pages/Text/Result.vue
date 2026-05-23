@@ -47,15 +47,14 @@ const strokeDashoffset = computed(() => CIRCUMFERENCE * (1 - props.analysis.ai_s
 
 const textPreview = computed(() => props.analysis.content ?? '');
 
-const modelLabel = computed(() =>
-    props.analysis.model === 'bert' ? 'BERT Português' : 'Detecting-AI'
-);
+const modelConfig = {
+    bert:         { label: 'BERT Português',          cls: 'bg-primary/15 text-primary border-primary/25' },
+    detecting_ai: { label: 'Detecting-AI',            cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' },
+    claude:       { label: 'Claude Haiku (Premium)',  cls: 'bg-amber-500/15 text-amber-400 border-amber-500/25' },
+};
 
-const modelBadgeClass = computed(() =>
-    props.analysis.model === 'bert'
-        ? 'bg-primary/15 text-primary border-primary/25'
-        : 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25'
-);
+const modelLabel     = computed(() => (modelConfig[props.analysis.model] ?? modelConfig.detecting_ai).label);
+const modelBadgeClass = computed(() => (modelConfig[props.analysis.model] ?? modelConfig.detecting_ai).cls);
 </script>
 
 <template>
