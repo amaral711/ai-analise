@@ -224,7 +224,9 @@ Where:
         }
 
         $content = $response->json('content.0.text') ?? '';
-        $parsed  = json_decode($content, true);
+        $content = preg_replace('/^```(?:json)?\s*/i', '', trim($content));
+        $content = preg_replace('/\s*```$/', '', $content);
+        $parsed  = json_decode(trim($content), true);
 
         if (!$parsed || !isset($parsed['ai_score'])) {
             Log::error('Claude API unexpected response', ['content' => $content]);

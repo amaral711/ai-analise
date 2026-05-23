@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Events\AnalysisCompleted;
 use App\Events\AnalysisFailed;
 use App\Models\TextAnalysis;
+use App\Services\CreditService;
 use App\Services\TextDetectionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,7 +23,7 @@ class AnalyzeTextJob implements ShouldQueue
 
     public function __construct(public TextAnalysis $analysis) {}
 
-    public function handle(TextDetectionService $service): void
+    public function handle(TextDetectionService $service, CreditService $creditService): void
     {
         $this->analysis->update(['status' => 'processing']);
 
@@ -35,6 +36,9 @@ class AnalyzeTextJob implements ShouldQueue
                 'explanation'    => $result['explanation'],
                 'status'         => 'completed',
             ]);
+
+            $creditCost = $this->analysis->model === 'claude' ? 2 : 1;
+            $creditService->deductForAnalysis($this->analysis->user, 'text', $this->analysis->id, $creditCost);
 
             AnalysisCompleted::dispatch($this->analysis, 'text');
         } catch (\Throwable $e) {

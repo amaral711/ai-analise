@@ -31,8 +31,6 @@ class TextAnalysisController extends Controller
 
         AnalyzeTextJob::dispatch($analysis);
 
-        $this->creditService->deductForAnalysis($request->user(), 'text', $analysis->id, $creditCost);
-
         return redirect()->route('analyses.waiting');
     }
 
