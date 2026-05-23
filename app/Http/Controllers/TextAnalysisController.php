@@ -19,7 +19,7 @@ class TextAnalysisController extends Controller
         $validated  = $request->validated();
         $creditCost = $validated['model'] === 'claude' ? 2 : 1;
 
-        if (!$this->creditService->hasCredits($request->user(), $creditCost)) {
+        if (!$request->user()->hasRole('admin') && !$this->creditService->hasCredits($request->user(), $creditCost)) {
             return back()->withErrors(['credits' => 'Créditos insuficientes para este modelo.']);
         }
 

@@ -37,8 +37,10 @@ class AnalyzeTextJob implements ShouldQueue
                 'status'         => 'completed',
             ]);
 
-            $creditCost = $this->analysis->model === 'claude' ? 2 : 1;
-            $creditService->deductForAnalysis($this->analysis->user, 'text', $this->analysis->id, $creditCost);
+            if (!$this->analysis->user->hasRole('admin')) {
+                $creditCost = $this->analysis->model === 'claude' ? 2 : 1;
+                $creditService->deductForAnalysis($this->analysis->user, 'text', $this->analysis->id, $creditCost);
+            }
 
             AnalysisCompleted::dispatch($this->analysis, 'text');
         } catch (\Throwable $e) {
