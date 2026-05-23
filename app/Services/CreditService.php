@@ -18,13 +18,13 @@ class CreditService
     public function grantFreemium(User $user): void
     {
         DB::transaction(function () use ($user) {
-            $user->increment('credits', 5);
+            $user->increment('credits', 10);
             $user->refresh();
 
             CreditTransaction::create([
                 'user_id'      => $user->id,
                 'type'         => 'freemium',
-                'credits_delta' => 5,
+                'credits_delta' => 10,
                 'balance_after' => $user->credits,
                 'description'  => 'Bônus de boas-vindas',
             ]);
